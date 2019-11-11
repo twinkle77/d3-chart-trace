@@ -1,0 +1,32 @@
+{
+  "name": "d3-trace",
+  "version": "0.0.1",
+  "description": "用于描述请求之间的调用关系",
+  "main": "index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=development rollup --config --watch",
+    "build": "cross-env NODE_ENV=production rollup --config"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twinkle77/d3-trace.git"
+  },
+  "keywords": [
+    "trace",
+    "http",
+    "request"
+  ],
+  "author": "twinkle77",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/twinkle77/d3-trace/issues"
+  },
+  "homepage": "https://github.com/twinkle77/d3-trace#readme",
+  "devDependencies": {
+    "cross-env": "^6.0.3",
+    "rollup": "^1.26.4",
+    "rollup-plugin-terser": "^5.1.2"
+  }
+}
