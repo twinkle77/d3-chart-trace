@@ -1,6 +1,4 @@
-function a () {
+import Brush from '@/brush/index'
 
-}
-const b = 12
-
-export default a
+console.log(process.env.NODE_ENV)
+console.log(Brush)

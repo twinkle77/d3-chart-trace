@@ -1,8 +1,11 @@
 import { terser } from "rollup-plugin-terser"
-import buble from 'rollup-plugin-buble'
-import alias from 'rollup-plugin-alias'
-import replace from 'rollup-plugin-replace'
 import { eslint } from 'rollup-plugin-eslint'
+import resolve from 'rollup-plugin-node-resolve'
+import commonjs from 'rollup-plugin-commonjs'
+import replace from 'rollup-plugin-replace'
+
+import alias from '@rollup/plugin-alias'
+import buble from '@rollup/plugin-buble'
 
 import path from 'path'
 
@@ -10,27 +13,29 @@ import * as meta from "./package.json"
 
 const pathResolve = p => path.resolve(__dirname, p)
 
-console.log(pathResolve('src'))
-
 const plugins = [
-  buble(),
-  alias({
-    '@': pathResolve('src')
+  eslint({
+    fix: true,
+    include: pathResolve('src') + '/**'
   }),
   replace({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }),
-  eslint({
-    fix: true,
-    include: pathResolve('src') + '/**'
-  })
+  resolve({
+    browser: true,
+    main: true,
+    jsnext: true
+  }),
+  commonjs(),
+  alias({
+    entries: {
+      '@': pathResolve('src')
+    }
+  }),
+  buble()
 ]
 
-if (process.env.NODE_ENV === 'production') {
-  plugins.unshift(terser())
-}
-
-export default [
+const config = [
   {
     input: 'src/index.js',
     output: {
@@ -39,8 +44,13 @@ export default [
       format: 'umd'
     },
     plugins
-  },
-  {
+  }
+]
+
+if (process.env.NODE_ENV === 'production') {
+  plugins.push(terser())
+
+  config.push({
     input: 'src/index.js',
     output: {
       name: meta.name,
@@ -48,5 +58,7 @@ export default [
       format: 'umd',
     },
     plugins
-  }
-]
+  })
+}
+
+export default config

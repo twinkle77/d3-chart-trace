@@ -1,6 +1,7 @@
 module.exports = {
   "root": true,
   "env": {
+    "node": true,
     "browser": true,
     "es6": true
   },
@@ -17,6 +18,8 @@ module.exports = {
   },
   "rules": {
     "semi": ["error", "never"],
-    "space-before-function-paren": ["error", "always"]
+    "space-before-function-paren": ["error", "always"],
+    "import/no-unresolved": [0],
+    "no-process-env": [0]
   }
 };

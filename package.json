@@ -6,6 +6,7 @@
   "module": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "live-server --watch=./dist",
     "dev": "cross-env NODE_ENV=development rollup --config --watch",
     "build": "cross-env NODE_ENV=production rollup --config"
   },
@@ -25,18 +26,22 @@
   },
   "homepage": "https://github.com/twinkle77/d3-trace#readme",
   "devDependencies": {
+    "@rollup/plugin-alias": "^2.2.0",
+    "@rollup/plugin-buble": "^0.20.0",
     "cross-env": "^6.0.3",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "live-server": "^1.2.1",
     "rollup": "^1.26.4",
-    "rollup-plugin-alias": "^2.2.0",
-    "rollup-plugin-buble": "^0.19.8",
+    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-eslint": "^7.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-terser": "^5.1.2"
   },
   "dependencies": {
-    "d3": "^5.14.2"
+    "d3": "^5.14.2",
+    "d3-brush": "^1.1.5"
   }
 }
