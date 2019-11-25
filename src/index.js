@@ -1,9 +1,6 @@
-const fn  = () => {
-};
+function a () {
 
-const a =  'asd'
-const b = "aad"
-const c='';
+}
+const b = 12
 
-
-export default fn
+export default a

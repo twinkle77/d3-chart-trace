@@ -10,6 +10,26 @@ import * as meta from "./package.json"
 
 const pathResolve = p => path.resolve(__dirname, p)
 
+console.log(pathResolve('src'))
+
+const plugins = [
+  buble(),
+  alias({
+    '@': pathResolve('src')
+  }),
+  replace({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  }),
+  eslint({
+    fix: true,
+    include: pathResolve('src') + '/**'
+  })
+]
+
+if (process.env.NODE_ENV === 'production') {
+  plugins.unshift(terser())
+}
+
 export default [
   {
     input: 'src/index.js',
@@ -18,16 +38,7 @@ export default [
       file: `dist/${meta.name}.js`,
       format: 'umd'
     },
-    plugins: [
-      buble(),
-      alias({
-        '@': pathResolve('src')
-      }),
-      replace({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-      }),
-      eslint()
-    ]
+    plugins
   },
   {
     input: 'src/index.js',
@@ -36,12 +47,6 @@ export default [
       file: `dist/${meta.name}.min.js`,
       format: 'umd',
     },
-    plugins: [
-      terser(),
-      buble(),
-      alias({
-        '@': pathResolve('src')
-      })
-    ]
+    plugins
   }
 ]
