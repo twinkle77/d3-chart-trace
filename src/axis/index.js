@@ -114,8 +114,12 @@ class Axis {
 
     this._selection
       .append('g')
+      .attr('transform', 'translate(0,0.5)')
       .attr('transform', () => `translate(${this._margin.left}, ${this._margin.top})`)
       .call(axis)
+      // .selectAll('text')
+      // .attr('dx', 0)
+      // .attr('dy', 0)
   }
 
   destory () {
