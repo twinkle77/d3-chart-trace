@@ -1,9 +1,10 @@
 import { terser } from "rollup-plugin-terser"
 import { eslint } from 'rollup-plugin-eslint'
+
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
-import replace from 'rollup-plugin-replace'
 
+import replace from '@rollup/plugin-replace'
 import alias from '@rollup/plugin-alias'
 import buble from '@rollup/plugin-buble'
 
