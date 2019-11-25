@@ -33,7 +33,12 @@ const plugins = [
       '@': pathResolve('src')
     }
   }),
-  buble()
+  buble({
+    transforms: {
+      dangerousForOf: true,
+      generator: false
+    }
+  })
 ]
 
 const config = [
@@ -42,7 +47,8 @@ const config = [
     output: {
       name: meta.name,
       file: `dist/${meta.name}.js`,
-      format: 'umd'
+      format: 'umd',
+      sourcemap: 'inline'
     },
     plugins
   }
@@ -56,7 +62,7 @@ if (process.env.NODE_ENV === 'production') {
     output: {
       name: meta.name,
       file: `dist/${meta.name}.min.js`,
-      format: 'umd',
+      format: 'umd'
     },
     plugins
   })
