@@ -11,6 +11,7 @@ import { scaleLinear } from 'd3-scale'
 
 import { query, getElementRect } from '@/util/element'
 import { AXIS_SVG } from '@/util/constant'
+
 /**
  * 坐标轴的朝向
  */
@@ -21,6 +22,12 @@ const POSITION = {
   LEFT: axisLeft,
 }
 
+/**
+ * 功能：
+ * 1. 支持渲染各种方向的坐标轴
+ * 2. 支持只渲染数值
+ * 3. 支持重渲染
+ */
 class Axis {
   constructor (selection) {
     this._selection = selection

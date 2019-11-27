@@ -2,13 +2,32 @@ import { select, event } from 'd3-selection'
 import { extent, max, min } from 'd3-array'
 import { scaleLinear } from 'd3-scale'
 import { brushX } from 'd3-brush'
+import d3 from '@/d3'
+import data from './data'
 
-import Axis from './axis/index'
+import Axis from './graph/axis'
+import Bar from './graph/bar'
 
-const svg = select(document.body)
-  .append('svg')
-  .attr('width', '100%')
-  // .attr('viewBox', [0, 0, 1000, 120])
+import './assets/style.less'
+
+import view from './view/index'
+
+const target = document.body
+
+const viewBox = [0, 0, 1000, 120]
+
+const {
+  mainWrapper,
+  graphWrapper,
+  traceWrapper,
+} = view.createContainer(target)
+
+mainWrapper
+  .attr('style', 'width: 1200px; border: 1px solid blue; height: auto')
+
+const svg = view
+  .createSvg(graphWrapper)
+  // .attr('viewBox', viewBox)
 
 const axis = new Axis(svg)
 
@@ -18,17 +37,6 @@ axis
   .range(1000)
   .render()
 
-const data = [
-  {
-    id: 1, startTime: 20, endTime: 30, label: 'haha',
-  },
-  {
-    id: 2, startTime: 21, endTime: 33, label: 'haha1',
-  },
-  {
-    id: 3, startTime: 22, endTime: 31, label: 'hah2',
-  },
-]
 
 const ext = extent(data, (d) => d.id)
 const minStartTime = min(data, (d) => d.startTime)
@@ -43,12 +51,18 @@ const xScale = scaleLinear().domain([minStartTime, maxEndTime]).range([0, 1000])
 
 console.log([minStartTime, maxEndTime])
 
+const bar = new Bar(svg, {
+  data,
+})
+
+bar.render()
+
 const miniG = svg
   .append('g')
   .attr('transform', `translate(${20}, ${20})`)
-  .attr('width', 1000)
-  .attr('height', miniHeight)
-  .attr('class', 'mini')
+  // .attr('width', 1000)
+  // .attr('height', miniHeight)
+  // .attr('class', 'mini')
 
 /**
  * 文字
@@ -126,6 +140,77 @@ miniG.append('g')
   .call(brushInstance)
   .selectAll('rect')
 
+/**  render header start */
+const headerWrapper = mainWrapper.append('div')
+  .classed('view-header', true)
+/**  render header end */
+
+function renderRow (container) {
+  container
+    .classed('trace-row', true)
+
+  const leftCol = container
+    .append('div')
+    .classed('trace-left-col', true)
+    // .text('table-left')
+
+  const rightCol = container
+    .append('div')
+    .classed('trace-right-col', true)
+  return {
+    leftCol,
+    rightCol,
+  }
+}
+
+const { leftCol, rightCol } = renderRow(headerWrapper)
+
+const headerAxisWrapper = rightCol
+  .append('svg')
+  .attr('width', '100%')
+  .attr('height', '100%')
+
+const headerAxis = new Axis(headerAxisWrapper)
+
+headerAxis
+  .tickSize(0)
+  .domain([1, 2])
+  .range(1000)
+  .render()
+
+/** render body start */
+
+function renderBody (spans) {
+  for (let i = 0; i < spans.length; i++) {
+    const { leftCol, rightCol } = renderRow(
+      mainWrapper.append('div'),
+    )
+
+    leftCol
+      .classed('left-col-span', true)
+
+    leftCol
+
+
+    const btnWrapper = leftCol
+      .append('div')
+
+    btnWrapper
+      .append('button')
+      .text('^')
+
+    btnWrapper
+      .append('a')
+      .text(spans[i].label)
+      .attr('style', `margin-left: ${spans[i].deep * 40}px `)
+
+    if (spans[i].children && spans[i].children.length) {
+      renderBody(spans[i].children)
+    }
+  }
+}
+
+renderBody(data)
 
 export default {
   Axis,
