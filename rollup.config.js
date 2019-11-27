@@ -8,16 +8,25 @@ import replace from '@rollup/plugin-replace'
 import alias from '@rollup/plugin-alias'
 import buble from '@rollup/plugin-buble'
 
+import less from 'rollup-plugin-less'
+
 import path from 'path'
 
 import * as meta from "./package.json"
 
 const pathResolve = p => path.resolve(__dirname, p)
 
+const root = pathResolve('src')
+
 const plugins = [
   eslint({
     fix: true,
-    include: pathResolve('src') + '/**'
+    include: `${root}/**`,
+    exclude: [`${root}/assets/**`]
+  }),
+  less({
+    insert: true,
+    output: false
   }),
   replace({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
@@ -30,7 +39,7 @@ const plugins = [
   commonjs(),
   alias({
     entries: {
-      '@': pathResolve('src')
+      '@': root
     }
   }),
   buble({
