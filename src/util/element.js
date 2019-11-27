@@ -5,7 +5,6 @@ import { warn } from './debug'
  * dom元素查找
  * @param {string | Element} el
  */
-// eslint-disable-next-line import/prefer-default-export
 export function query (el) {
   if (typeof el === 'string') {
     const selected = document.querySelector(el)
@@ -34,4 +33,9 @@ export function getElementRect (el) {
     width: elRect.width || elRect.right - elRect.left,
     height: elRect.height || elRect.bottom - elRect.top,
   }
+}
+
+const PREFIX = 'd3-trace'
+export function getClass (className) {
+  return `${PREFIX}-${className}`
 }

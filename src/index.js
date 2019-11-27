@@ -38,21 +38,25 @@ axis
   .render()
 
 
-const ext = extent(data, (d) => d.id)
-const minStartTime = min(data, (d) => d.startTime)
-const maxEndTime = max(data, (d) => d.endTime)
+// const ext = extent(data, (d) => d.id)
+// const minStartTime = min(data, (d) => d.startTime)
+// const maxEndTime = max(data, (d) => d.endTime)
 
-const miniHeight = data.length * 12 + 50
+// const miniHeight = data.length * 12 + 50
 
 // 线条数量
-const lineCount = data.length + 1
-const yScale = scaleLinear().domain([1, lineCount]).range([0, miniHeight])
-const xScale = scaleLinear().domain([minStartTime, maxEndTime]).range([0, 1000])
+// const lineCount = data.length + 1
+// const yScale = scaleLinear().domain([1, lineCount]).range([0, miniHeight])
+// const xScale = scaleLinear().domain([minStartTime, maxEndTime]).range([0, 1000])
 
-console.log([minStartTime, maxEndTime])
+// console.log([minStartTime, maxEndTime])
 
 const bar = new Bar(svg, {
   data,
+  offset: {
+    top: 25,
+    left: 20,
+  },
 })
 
 bar.render()
@@ -67,78 +71,78 @@ const miniG = svg
 /**
  * 文字
  */
-miniG.append('g')
-  .selectAll('.ctext')
-  .data(data)
-  .enter()
-  .append('text')
-  .classed('ctext', true)
-  .text((d) => d.label)
-  .attr('x', -10)
-  .attr('y', (d, index) => yScale(index + 1 + 0.5))
-  .attr('dy', '0.5ex')
-  .attr('text-anchor', 'start')
-  .attr('style', 'font-size: 12px;')
-  .each(function computeWidth (n) {
-    n.textWidth = this.getComputedTextLength()
-  })
+// miniG.append('g')
+//   .selectAll('.ctext')
+//   .data(data)
+//   .enter()
+//   .append('text')
+//   .classed('ctext', true)
+//   .text((d) => d.label)
+//   .attr('x', -10)
+//   .attr('y', (d, index) => yScale(index + 1 + 0.5))
+//   .attr('dy', '0.5ex')
+//   .attr('text-anchor', 'start')
+//   .attr('style', 'font-size: 12px;')
+//   .each(function computeWidth (n) {
+//     n.textWidth = this.getComputedTextLength()
+//   })
 
-const maxTextWidth = max(data, (d) => d.textWidth)
+// const maxTextWidth = max(data, (d) => d.textWidth)
 
 /**
  * 线条
  */
-const lineWrapper = miniG.append('g')
-  .attr('transform', `translate(${maxTextWidth}, 0)`)
+// const lineWrapper = miniG.append('g')
+//   .attr('transform', `translate(${maxTextWidth}, 0)`)
 
-lineWrapper
-  .selectAll('.lines')
-  .data(new Array(lineCount))
-  .enter()
-  .append('line')
-  .classed('lines', true)
-  .attr('x1', 0)
-  .attr('y1', (d, index) => yScale(index + 1) + 0.5)
-  .attr('x2', 1000)
-  .attr('y2', (d, index) => yScale(index + 1) + 0.5)
-  .attr('stroke', 'lightgray')
+// lineWrapper
+//   .selectAll('.lines')
+//   .data(new Array(lineCount))
+//   .enter()
+//   .append('line')
+//   .classed('lines', true)
+//   .attr('x1', 0)
+//   .attr('y1', (d, index) => yScale(index + 1) + 0.5)
+//   .attr('x2', 1000)
+//   .attr('y2', (d, index) => yScale(index + 1) + 0.5)
+//   .attr('stroke', 'lightgray')
 
 /**
  * 矩形绘制
  */
-miniG.append('g')
-  .attr('transform', `translate(${maxTextWidth}, 0)`)
-  .selectAll('.crect')
-  .data(data)
-  .enter()
-  .append('rect')
-  .classed('crect', true)
-  .attr('x', (d) => xScale(d.startTime))
-  .attr('y', (d, index) => yScale(index + 1 + 0.5) + 0.5 - 12 / 2)
-  .attr('width', (d) => xScale(d.endTime) - xScale(d.startTime))
-  .attr('height', 12)
+// miniG.append('g')
+//   .attr('transform', `translate(${maxTextWidth}, 0)`)
+//   .selectAll('.crect')
+//   .data(data)
+//   .enter()
+//   .append('rect')
+//   .classed('crect', true)
+//   .attr('x', (d) => xScale(d.startTime))
+//   .attr('y', (d, index) => yScale(index + 1 + 0.5) + 0.5 - 12 / 2)
+//   .attr('width', (d) => xScale(d.endTime) - xScale(d.startTime))
+//   .attr('height', 12)
 
 /**
  * 刷子
  */
 
-function brushHandler () {
-  console.log('brushHandler')
-  console.log(event.selection)
-  console.log(event.selection.map(xScale.invert))
-}
+// function brushHandler () {
+//   console.log('brushHandler')
+//   console.log(event.selection)
+//   console.log(event.selection.map(xScale.invert))
+// }
 
-const brushInstance = brushX()
-  .extent([[0, 0], [1000, miniHeight]])
-  // .on('brush', brushHandler)
-  .on('end', brushHandler)
+// const brushInstance = brushX()
+//   .extent([[0, 0], [1000, miniHeight]])
+//   // .on('brush', brushHandler)
+//   .on('end', brushHandler)
 
-miniG.append('g')
-  .attr('transform', `translate(${maxTextWidth}, 0)`)
-  .attr('class', 'x brush')
-  .attr('width', 1000)
-  .call(brushInstance)
-  .selectAll('rect')
+// miniG.append('g')
+//   .attr('transform', `translate(${maxTextWidth}, 0)`)
+//   .attr('class', 'x brush')
+//   .attr('width', 1000)
+//   .call(brushInstance)
+//   .selectAll('rect')
 
 /**  render header start */
 const headerWrapper = mainWrapper.append('div')
@@ -163,14 +167,14 @@ function renderRow (container) {
   }
 }
 
-const { leftCol, rightCol } = renderRow(headerWrapper)
+// const { leftCol, rightCol } = renderRow(headerWrapper)
 
-const headerAxisWrapper = rightCol
-  .append('svg')
-  .attr('width', '100%')
-  .attr('height', '100%')
+// const headerAxisWrapper = rightCol
+//   .append('svg')
+//   .attr('width', '100%')
+//   .attr('height', '100%')
 
-const headerAxis = new Axis(headerAxisWrapper)
+// const headerAxis = new Axis(headerAxisWrapper)
 
 headerAxis
   .tickSize(0)
@@ -210,7 +214,7 @@ function renderBody (spans) {
   }
 }
 
-renderBody(data)
+// renderBody(data)
 
 export default {
   Axis,
