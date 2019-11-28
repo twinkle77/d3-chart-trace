@@ -30,7 +30,6 @@ const axis = new Axis(svg)
 axis
   .tickSize(0)
   .domain([1, 2])
-  .range(1000)
 
 /**
  * 初始化bar图
@@ -43,25 +42,33 @@ const bar = new Bar(svg, {
   },
 })
 
+setTimeout(() => {
+  const SVG_WIDTH = getElementRect(mainWrapper.node()).width
+  console.log('timeout', SVG_WIDTH)
+}, 2000)
+
 function setup () {
   /**
    * 以target节点的宽度做为svg的宽度
    */
   const SVG_WIDTH = getElementRect(mainWrapper.node()).width
 
-  axis
-    .render()
-  const AXIS_HEIGHT = 20
+  console.log('svg_width', SVG_WIDTH)
 
-  bar.render({
-    chartWidth: SVG_WIDTH,
-  })
-  const BAR_TOTOL_HEIGHT = bar.chartHeight
+  // axis
+  //   .range(SVG_WIDTH)
+  //   .render()
+  // const AXIS_HEIGHT = 20
 
-  /** axis图 和 graph图 渲染完成后再设置svg的长度 */
-  svg
-    .attr('width', SVG_WIDTH)
-    .attr('height', AXIS_HEIGHT + BAR_TOTOL_HEIGHT)
+  // bar.render({
+  //   chartWidth: SVG_WIDTH,
+  // })
+  // const BAR_TOTOL_HEIGHT = bar.chartHeight
+
+  // /** axis图 和 graph图 渲染完成后再设置svg的长度 */
+  // svg
+  //   .attr('width', SVG_WIDTH)
+  //   .attr('height', AXIS_HEIGHT + BAR_TOTOL_HEIGHT)
 }
 
 setup()

@@ -1,9 +1,3 @@
-import {
-  axisTop,
-  axisRight,
-  axisBottom,
-  axisLeft,
-} from 'd3-axis'
 import d3 from '../d3'
 import { getClass } from '../util/element'
 
@@ -29,7 +23,7 @@ class Axis {
     this._selection = selection
 
     this._offset = options.offset || {
-      top: 0, left: 0, right: 0, bottom: 0,
+      top: 20, left: 0, right: 0, bottom: 0,
     }
 
     this._scaleFn = d3.scaleLinear()
@@ -41,6 +35,11 @@ class Axis {
     this._tickPaddding = 3
 
     this._format = d3.format(options.format || '.1f')
+
+    this._axisContainer = this._selection
+      .append('g')
+      .classed(getClass('axis-container'), true)
+      .attr('transform', () => `translate(${this._offset.left}, ${this._offset.top})`)
   }
 
   domain (min, max) {
@@ -93,17 +92,14 @@ class Axis {
   }
 
   render () {
-    const axis = d3.axisTop()
+    const axis = this._posFn()
       .scale(this._scaleFn)
       .ticks(this._ticksCount)
       .tickSize(this._tickSize)
       .tickPadding(this._tickPaddding)
       .tickFormat(this._format)
 
-    this._selection
-      .append('g')
-      .classed(getClass('axis-container'), true)
-      .attr('transform', () => `translate(${20 || this._offset.left}, ${20 || this._offset.top})`)
+    this._axisContainer
       .call(axis)
   }
 
