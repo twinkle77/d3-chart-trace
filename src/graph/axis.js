@@ -4,22 +4,18 @@ import {
   axisBottom,
   axisLeft,
 } from 'd3-axis'
+import d3 from '../d3'
+import { getClass } from '../util/element'
 
-import { select } from 'd3-selection'
-import { format } from 'd3-format'
-import { scaleLinear } from 'd3-scale'
-
-import { query, getElementRect } from '@/util/element'
-import { AXIS_SVG } from '@/util/constant'
 
 /**
  * 坐标轴的朝向
  */
 const POSITION = {
-  TOP: axisTop,
-  RIGHT: axisRight,
-  BOTTOM: axisBottom,
-  LEFT: axisLeft,
+  TOP: d3.axisTop,
+  RIGHT: d3.axisRight,
+  BOTTOM: d3.axisBottom,
+  LEFT: d3.axisLeft,
 }
 
 /**
@@ -29,36 +25,22 @@ const POSITION = {
  * 3. 支持重渲染
  */
 class Axis {
-  constructor (selection) {
+  constructor (selection, options = {}) {
     this._selection = selection
-    this._initConfig()
-    this._init()
-  }
 
-  _initConfig () {
-    this._margin = {
-      top: 20,
-      left: 20,
-      right: 20,
+    this._offset = options.offset || {
+      top: 0, left: 0, right: 0, bottom: 0,
     }
 
-    const axisWidth = 1000
-
-    this._scaleFn = scaleLinear()
+    this._scaleFn = d3.scaleLinear()
 
     this._posFn = POSITION.TOP
 
-    this._ticksNumber = 5
+    this._ticksCount = 5
     this._tickSize = 5
     this._tickPaddding = 3
-    this._formatFn = format('.0%')
-  }
 
-  _init () {
-    // this._selection
-    //   .attr('class', AXIS_SVG)
-    //   .attr('width', '100%')
-    //   .attr('height', '100%')
+    this._format = d3.format(options.format || '.1f')
   }
 
   domain (min, max) {
@@ -69,15 +51,14 @@ class Axis {
 
   range (axisWidth) {
     if (!arguments.length) return this._scaleFn.range()
-
-    this._scaleFn.range([0, axisWidth - this._margin.left - this._margin.right])
+    this._scaleFn.range([0, axisWidth - this._offset.left - this._offset.right])
 
     return this
   }
 
   ticks (number) {
-    if (!arguments.length) return this._ticksNumber
-    this._ticksNumber = number
+    if (!arguments.length) return this._ticksCount
+    this._ticksCount = number
     return this
   }
 
@@ -106,22 +87,23 @@ class Axis {
   }
 
   tickFormat (formatFn) {
-    if (!arguments.length) return this._formatFn
-    this._formatFn = formatFn
+    if (!arguments.length) return this._format
+    this._format = formatFn
     return this
   }
 
   render () {
-    const axis = this._posFn()
+    const axis = d3.axisTop()
       .scale(this._scaleFn)
-      .ticks(this._ticksNumber)
+      .ticks(this._ticksCount)
       .tickSize(this._tickSize)
       .tickPadding(this._tickPaddding)
-      .tickFormat(format('.0%'))
+      .tickFormat(this._format)
 
     this._selection
       .append('g')
-      .attr('transform', () => `translate(${this._margin.left}, ${this._margin.top})`)
+      .classed(getClass('axis-container'), true)
+      .attr('transform', () => `translate(${20 || this._offset.left}, ${20 || this._offset.top})`)
       .call(axis)
   }
 

@@ -39,3 +39,10 @@ const PREFIX = 'd3-trace'
 export function getClass (className) {
   return `${PREFIX}-${className}`
 }
+
+export function getViewportInfo () {
+  return {
+    width: document.documentElement.clientWidth,
+    height: document.documentElement.clientHeight,
+  }
+}

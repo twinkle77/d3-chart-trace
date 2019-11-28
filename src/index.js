@@ -1,8 +1,3 @@
-import { select, event } from 'd3-selection'
-import { extent, max, min } from 'd3-array'
-import { scaleLinear } from 'd3-scale'
-import { brushX } from 'd3-brush'
-import d3 from '@/d3'
 import data from './data'
 
 import Axis from './graph/axis'
@@ -12,80 +7,76 @@ import './assets/style.less'
 
 import view from './view/index'
 
-const target = document.body
+import { getElementRect } from './util/element'
 
-const viewBox = [0, 0, 1000, 120]
+const target = document.body
 
 const {
   mainWrapper,
   graphWrapper,
-  traceWrapper,
 } = view.createContainer(target)
 
-mainWrapper
-  .attr('style', 'width: 1200px; border: 1px solid blue; height: auto')
-
+/**
+ * 插入画布
+ */
 const svg = view
   .createSvg(graphWrapper)
-  // .attr('viewBox', viewBox)
 
+/**
+ * 初始化axis图
+ */
 const axis = new Axis(svg)
 
 axis
   .tickSize(0)
   .domain([1, 2])
   .range(1000)
-  .render()
 
-
-// const ext = extent(data, (d) => d.id)
-// const minStartTime = min(data, (d) => d.startTime)
-// const maxEndTime = max(data, (d) => d.endTime)
-
-// const miniHeight = data.length * 12 + 50
-
-// 线条数量
-// const lineCount = data.length + 1
-// const yScale = scaleLinear().domain([1, lineCount]).range([0, miniHeight])
-// const xScale = scaleLinear().domain([minStartTime, maxEndTime]).range([0, 1000])
-
-// console.log([minStartTime, maxEndTime])
-
+/**
+ * 初始化bar图
+ */
 const bar = new Bar(svg, {
   data,
   offset: {
-    top: 25,
-    left: 20,
+    top: 20,
+    left: 0,
   },
 })
 
-bar.render()
+function setup () {
+  /**
+   * 以target节点的宽度做为svg的宽度
+   */
+  const SVG_WIDTH = getElementRect(mainWrapper.node()).width
 
-const miniG = svg
-  .append('g')
-  .attr('transform', `translate(${20}, ${20})`)
-  // .attr('width', 1000)
-  // .attr('height', miniHeight)
-  // .attr('class', 'mini')
+  axis
+    .render()
+  const AXIS_HEIGHT = 20
 
-/**
- * 文字
- */
-// miniG.append('g')
-//   .selectAll('.ctext')
-//   .data(data)
-//   .enter()
-//   .append('text')
-//   .classed('ctext', true)
-//   .text((d) => d.label)
-//   .attr('x', -10)
-//   .attr('y', (d, index) => yScale(index + 1 + 0.5))
-//   .attr('dy', '0.5ex')
-//   .attr('text-anchor', 'start')
-//   .attr('style', 'font-size: 12px;')
-//   .each(function computeWidth (n) {
-//     n.textWidth = this.getComputedTextLength()
-//   })
+  bar.render({
+    chartWidth: SVG_WIDTH,
+  })
+  const BAR_TOTOL_HEIGHT = bar.chartHeight
+
+  /** axis图 和 graph图 渲染完成后再设置svg的长度 */
+  svg
+    .attr('width', SVG_WIDTH)
+    .attr('height', AXIS_HEIGHT + BAR_TOTOL_HEIGHT)
+}
+
+setup()
+
+window.addEventListener('resize', () => {
+  setup()
+})
+
+// const miniG = svg
+//   .append('g')
+//   .attr('transform', `translate(${20}, ${20})`)
+// .attr('width', 1000)
+// .attr('height', miniHeight)
+// .attr('class', 'mini')
+
 
 // const maxTextWidth = max(data, (d) => d.textWidth)
 
@@ -176,11 +167,11 @@ function renderRow (container) {
 
 // const headerAxis = new Axis(headerAxisWrapper)
 
-headerAxis
-  .tickSize(0)
-  .domain([1, 2])
-  .range(1000)
-  .render()
+// headerAxis
+//   .tickSize(0)
+//   .domain([1, 2])
+//   .range(1000)
+//   .render()
 
 /** render body start */
 

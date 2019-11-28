@@ -10,16 +10,16 @@ export default class Bar {
 
   _init () {
     const {
-      barHeight, margin, data = [], chartWidth,
+      barHeight, margin, data = [],
     } = this._options
 
-    const [minStartTime, maxEndTime] = this._getTimeRange()
 
     const chartHeight = (barHeight + margin * 2) * data.length
+    this.chartHeight = chartHeight
 
     const lineCount = data.length + 1
 
-    this._xScale = d3.scaleLinear().domain([minStartTime, maxEndTime]).range([0, chartWidth])
+
     this._yScale = d3.scaleLinear().domain([0, lineCount]).range([0, chartHeight])
 
 
@@ -47,6 +47,7 @@ export default class Bar {
       .enter()
       .append('line')
       .classed(lineClassName, true)
+      .merge(lineEls)
       .attr('x1', 0)
       .attr('y1', (_, index) => this._yScale(index))
       .attr('x2', chartWidth)
@@ -65,13 +66,40 @@ export default class Bar {
 
   }
 
-  _draw () {
-    this._drawLines()
-    this._drawRects()
+  // eslint-disable-next-line class-methods-use-this
+  _drawText () {
+    /*
+    this.miniG.append('g')
+      .selectAll('.ctext')
+      .data(data)
+      .enter()
+      .append('text')
+      .classed('ctext', true)
+      .text((d) => d.label)
+      .attr('x', -10)
+      .attr('y', (d, index) => yScale(index + 1 + 0.5))
+      .attr('dy', '0.5ex')
+      .attr('text-anchor', 'start')
+      .attr('style', 'font-size: 12px;')
+      .each(function computeWidth (n) {
+        n.textWidth = this.getComputedTextLength()
+      })
+    */
   }
 
-  render () {
-    this._draw()
+  /** 计算x轴的比例尺 */
+  _computeXscale () {
+    const [minStartTime, maxEndTime] = this._getTimeRange()
+
+    const { chartWidth } = this._options
+    this._xScale = d3.scaleLinear().domain([minStartTime, maxEndTime]).range([0, chartWidth])
+  }
+
+  render ({ chartWidth }) {
+    this._options.chartWidth = chartWidth
+    this._computeXscale()
+    this._drawLines()
+    this._drawRects()
   }
 
   _getTimeRange () {
