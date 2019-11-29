@@ -13,14 +13,12 @@ export default class Bar {
       barHeight, margin, data = [],
     } = this._options
 
-
-    const chartHeight = (barHeight + margin * 2) * data.length
+    const singleHeight = barHeight + margin * 2
+    const chartHeight = singleHeight * data.length
     this.chartHeight = chartHeight
 
-    const lineCount = data.length + 1
 
-
-    this._yScale = d3.scaleLinear().domain([0, lineCount]).range([0, chartHeight])
+    this._yScale = d3.scaleLinear().domain([0, data.length - 1]).range([singleHeight, chartHeight])
 
 
     const { offset } = this._options
@@ -52,7 +50,7 @@ export default class Bar {
       .attr('y1', (_, index) => this._yScale(index))
       .attr('x2', chartWidth)
       .attr('y2', (_, index) => this._yScale(index))
-      .attr('stroke', 'lightgray')
+      // .attr('stroke', 'lightgray')
 
     lineEls
       .exit()
@@ -63,7 +61,27 @@ export default class Bar {
    * 矩形绘制
    */
   _drawRects () {
+    const { data, barHeight } = this._options
 
+    const rectClassName = getClass('bar-rect')
+
+    const rectEls = this._container
+      .selectAll(`.${rectClassName}`)
+      .data(data)
+
+    rectEls
+      .enter()
+      .append('rect')
+      .classed(rectClassName, true)
+      .merge(rectEls)
+      .attr('x', (d) => this._xScale(d.startTime))
+      .attr('y', (d, index) => this._yScale(index - 1 + 0.5) - barHeight / 2)
+      .attr('width', (d) => this._xScale(d.endTime) - this._xScale(d.startTime))
+      .attr('height', barHeight)
+
+    rectEls
+      .exit()
+      .remove()
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -113,7 +131,7 @@ export default class Bar {
   get defaultOptions () {
     return {
       barHeight: 12,
-      margin: 4,
+      margin: 8,
       chartWidth: 1000,
       offset: {
         top: 20,

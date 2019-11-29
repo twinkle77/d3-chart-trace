@@ -42,10 +42,10 @@ const bar = new Bar(svg, {
   },
 })
 
-setTimeout(() => {
-  const SVG_WIDTH = getElementRect(mainWrapper.node()).width
-  console.log('timeout', SVG_WIDTH)
-}, 2000)
+// setTimeout(() => {
+//   const SVG_WIDTH = getElementRect(mainWrapper.node()).width
+//   console.log('timeout', SVG_WIDTH)
+// }, 2000)
 
 function setup () {
   /**
@@ -53,22 +53,20 @@ function setup () {
    */
   const SVG_WIDTH = getElementRect(mainWrapper.node()).width
 
-  console.log('svg_width', SVG_WIDTH)
+  axis
+    .range(SVG_WIDTH)
+    .render()
+  const AXIS_HEIGHT = 20
 
-  // axis
-  //   .range(SVG_WIDTH)
-  //   .render()
-  // const AXIS_HEIGHT = 20
+  bar.render({
+    chartWidth: SVG_WIDTH,
+  })
+  const BAR_TOTOL_HEIGHT = bar.chartHeight
 
-  // bar.render({
-  //   chartWidth: SVG_WIDTH,
-  // })
-  // const BAR_TOTOL_HEIGHT = bar.chartHeight
-
-  // /** axis图 和 graph图 渲染完成后再设置svg的长度 */
-  // svg
-  //   .attr('width', SVG_WIDTH)
-  //   .attr('height', AXIS_HEIGHT + BAR_TOTOL_HEIGHT)
+  /** axis图 和 graph图 渲染完成后再设置svg的长度 */
+  svg
+    .attr('width', SVG_WIDTH)
+    .attr('height', AXIS_HEIGHT + BAR_TOTOL_HEIGHT)
 }
 
 setup()
@@ -92,18 +90,6 @@ window.addEventListener('resize', () => {
  */
 // const lineWrapper = miniG.append('g')
 //   .attr('transform', `translate(${maxTextWidth}, 0)`)
-
-// lineWrapper
-//   .selectAll('.lines')
-//   .data(new Array(lineCount))
-//   .enter()
-//   .append('line')
-//   .classed('lines', true)
-//   .attr('x1', 0)
-//   .attr('y1', (d, index) => yScale(index + 1) + 0.5)
-//   .attr('x2', 1000)
-//   .attr('y2', (d, index) => yScale(index + 1) + 0.5)
-//   .attr('stroke', 'lightgray')
 
 /**
  * 矩形绘制
