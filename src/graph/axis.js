@@ -19,8 +19,8 @@ const POSITION = {
  * 3. 支持重渲染
  */
 class Axis {
-  constructor (selection, options = {}) {
-    this._selection = selection
+  constructor (container, options = {}) {
+    this._container = container
 
     this._offset = options.offset || {
       top: 20, left: 0, right: 0, bottom: 0,
@@ -36,10 +36,12 @@ class Axis {
 
     this._format = d3.format(options.format || '.1f')
 
-    this._axisContainer = this._selection
+    this._axisContainer = this._container
       .append('g')
       .classed(getClass('axis-container'), true)
       .attr('transform', () => `translate(${this._offset.left}, ${this._offset.top})`)
+
+    this.chartHeight = this._offset.left
   }
 
   domain (min, max) {
@@ -89,6 +91,10 @@ class Axis {
     if (!arguments.length) return this._format
     this._format = formatFn
     return this
+  }
+
+  getChartHeight () {
+    return this.chartHeight
   }
 
   render () {

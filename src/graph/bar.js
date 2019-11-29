@@ -2,8 +2,8 @@ import d3 from '../d3'
 import { getClass } from '../util/element'
 
 export default class Bar {
-  constructor (svg, options) {
-    this._svg = svg
+  constructor (container, options) {
+    this._container = container
     this._options = Object.assign(this.defaultOptions, options)
     this._init()
   }
@@ -23,7 +23,7 @@ export default class Bar {
 
     const { offset } = this._options
 
-    this._container = this._svg
+    this._barContainer = this._container
       .append('g')
       .classed(getClass('bar-container'), true)
       .attr('transform', `translate(${offset.left}, ${offset.top})`)
@@ -37,7 +37,7 @@ export default class Bar {
 
     const lineClassName = getClass('bar-line')
 
-    const lineEls = this._container
+    const lineEls = this._barContainer
       .selectAll(`.${lineClassName}`)
       .data(data)
 
@@ -65,7 +65,7 @@ export default class Bar {
 
     const rectClassName = getClass('bar-rect')
 
-    const rectEls = this._container
+    const rectEls = this._barContainer
       .selectAll(`.${rectClassName}`)
       .data(data)
 
@@ -84,9 +84,8 @@ export default class Bar {
       .remove()
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  /*
   _drawText () {
-    /*
     this.miniG.append('g')
       .selectAll('.ctext')
       .data(data)
@@ -102,8 +101,8 @@ export default class Bar {
       .each(function computeWidth (n) {
         n.textWidth = this.getComputedTextLength()
       })
-    */
   }
+  */
 
   /** 计算x轴的比例尺 */
   _computeXscale () {
@@ -111,6 +110,10 @@ export default class Bar {
 
     const { chartWidth } = this._options
     this._xScale = d3.scaleLinear().domain([minStartTime, maxEndTime]).range([0, chartWidth])
+  }
+
+  getChartHeight () {
+    return this.chartHeight
   }
 
   render ({ chartWidth }) {
@@ -128,6 +131,7 @@ export default class Bar {
     ]
   }
 
+  // eslint-disable-next-line class-methods-use-this
   get defaultOptions () {
     return {
       barHeight: 12,

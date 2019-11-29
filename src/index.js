@@ -1,11 +1,10 @@
+import './assets/style.less'
 import data from './data'
 
+import view from './view/index'
 import Axis from './graph/axis'
 import Bar from './graph/bar'
-
-import './assets/style.less'
-
-import view from './view/index'
+import Brush from './graph/brush'
 
 import { getElementRect } from './util/element'
 
@@ -42,6 +41,17 @@ const bar = new Bar(svg, {
   },
 })
 
+/**
+ * 初始化刷子
+ */
+const brush = new Brush(svg, {
+  data,
+  offset: {
+    top: 20,
+    left: 0,
+  },
+})
+
 // setTimeout(() => {
 //   const SVG_WIDTH = getElementRect(mainWrapper.node()).width
 //   console.log('timeout', SVG_WIDTH)
@@ -56,12 +66,18 @@ function setup () {
   axis
     .range(SVG_WIDTH)
     .render()
-  const AXIS_HEIGHT = 20
+  const AXIS_HEIGHT = axis.getChartHeight()
 
   bar.render({
     chartWidth: SVG_WIDTH,
   })
-  const BAR_TOTOL_HEIGHT = bar.chartHeight
+  const BAR_TOTOL_HEIGHT = bar.getChartHeight()
+
+
+  brush.render({
+    brushWidth: SVG_WIDTH,
+    brushHeight: BAR_TOTOL_HEIGHT,
+  })
 
   /** axis图 和 graph图 渲染完成后再设置svg的长度 */
   svg
@@ -74,37 +90,6 @@ setup()
 window.addEventListener('resize', () => {
   setup()
 })
-
-// const miniG = svg
-//   .append('g')
-//   .attr('transform', `translate(${20}, ${20})`)
-// .attr('width', 1000)
-// .attr('height', miniHeight)
-// .attr('class', 'mini')
-
-
-// const maxTextWidth = max(data, (d) => d.textWidth)
-
-/**
- * 线条
- */
-// const lineWrapper = miniG.append('g')
-//   .attr('transform', `translate(${maxTextWidth}, 0)`)
-
-/**
- * 矩形绘制
- */
-// miniG.append('g')
-//   .attr('transform', `translate(${maxTextWidth}, 0)`)
-//   .selectAll('.crect')
-//   .data(data)
-//   .enter()
-//   .append('rect')
-//   .classed('crect', true)
-//   .attr('x', (d) => xScale(d.startTime))
-//   .attr('y', (d, index) => yScale(index + 1 + 0.5) + 0.5 - 12 / 2)
-//   .attr('width', (d) => xScale(d.endTime) - xScale(d.startTime))
-//   .attr('height', 12)
 
 /**
  * 刷子
