@@ -1,142 +1,151 @@
 import './assets/style.less'
 import data from './data'
+import d3 from './d3'
 
 import view from './view/index'
 import Axis from './graph/axis'
 import Bar from './graph/bar'
 import Brush from './graph/brush'
 
-import { getElementRect } from './util/element'
+import { getElementRect, query } from './util/element'
 
-const target = document.body
+class Trace {
+  constructor (target = 'target', options = {}) {
+    this._init(query(target))
+  }
 
-const {
-  mainWrapper,
-  graphWrapper,
-} = view.createContainer(target)
+  _init (target) {
+    this._insertLayout(target)
+    this._initGraph()
+    this._renderView()
+    this._bindEvent()
+  }
 
-/**
- * 插入画布
- */
-const svg = view
-  .createSvg(graphWrapper)
+  _insertLayout (target) {
+    const {
+      mainWrapper,
+      graphWrapper,
+    } = view.createContainer(target)
+    this._mainWrapper = mainWrapper
+    this._graphWrapper = graphWrapper
 
-/**
- * 初始化axis图
- */
-const axis = new Axis(svg)
+    /**
+     * 插入画布
+     */
+    const svg = view.createSvg(graphWrapper)
+    this._svg = svg
+  }
 
-axis
-  .tickSize(0)
-  .domain([1, 2])
+  _initGraph () {
+    /**
+     * 初始化axis图
+     */
+    const axis = new Axis(this._svg)
+    axis
+      .tickSize(0)
+      .domain([1, 2])
+    this._axis = axis
 
-/**
- * 初始化bar图
- */
-const bar = new Bar(svg, {
-  data,
-  offset: {
-    top: 20,
-    left: 0,
-  },
-})
-
-/**
- * 初始化刷子
- */
-const brush = new Brush(svg, {
-  data,
-  offset: {
-    top: 20,
-    left: 0,
-  },
-})
-
-// setTimeout(() => {
-//   const SVG_WIDTH = getElementRect(mainWrapper.node()).width
-//   console.log('timeout', SVG_WIDTH)
-// }, 2000)
-
-function setup () {
-  /**
-   * 以target节点的宽度做为svg的宽度
-   */
-  const SVG_WIDTH = getElementRect(mainWrapper.node()).width
-
-  axis
-    .range(SVG_WIDTH)
-    .render()
-  const AXIS_HEIGHT = axis.getChartHeight()
-
-  bar
-    .setChartWidth(SVG_WIDTH)
-    .render()
-  const BAR_TOTOL_HEIGHT = bar.getChartHeight()
-
-
-  brush
-    .setBrushView({
-      brushWidth: SVG_WIDTH,
-      brushHeight: BAR_TOTOL_HEIGHT,
+    /**
+     * 初始化bar图
+     */
+    const bar = new Bar(this._svg, {
+      data,
+      offset: {
+        top: 20,
+        left: 0,
+      },
     })
-    .render()
+    this._bar = bar
 
-  /** axis图 和 graph图 渲染完成后再设置svg的长度 */
-  svg
-    .attr('width', SVG_WIDTH)
-    .attr('height', AXIS_HEIGHT + BAR_TOTOL_HEIGHT)
-}
+    /**
+     * 初始化刷子
+     */
+    const brush = new Brush(this._svg, {
+      data,
+      offset: {
+        top: 20,
+        left: 0,
+      },
+    })
+    this._brush = brush
+  }
 
-setup()
+  _renderTable () {}
 
-window.addEventListener('resize', () => {
-  setup()
-})
+  _renderView () {
+    /**
+     * 以target节点的宽度做为svg的宽度
+     */
+    const SVG_WIDTH = getElementRect(this._mainWrapper.node()).width
 
-/**
- * 刷子
- */
+    this._axis
+      .range(SVG_WIDTH)
+      .render()
+    const AXIS_HEIGHT = this._axis.getChartHeight()
 
-// function brushHandler () {
-//   console.log('brushHandler')
-//   console.log(event.selection)
-//   console.log(event.selection.map(xScale.invert))
-// }
+    this._bar
+      .setChartWidth(SVG_WIDTH)
+      .render()
+    const BAR_TOTOL_HEIGHT = this._bar.getChartHeight()
 
-// const brushInstance = brushX()
-//   .extent([[0, 0], [1000, miniHeight]])
-//   // .on('brush', brushHandler)
-//   .on('end', brushHandler)
 
-// miniG.append('g')
-//   .attr('transform', `translate(${maxTextWidth}, 0)`)
-//   .attr('class', 'x brush')
-//   .attr('width', 1000)
-//   .call(brushInstance)
-//   .selectAll('rect')
+    this._brush
+      .setBrushView({
+        brushWidth: SVG_WIDTH,
+        brushHeight: BAR_TOTOL_HEIGHT,
+      })
+      .render()
 
-/**  render header start */
-const headerWrapper = mainWrapper.append('div')
-  .classed('view-header', true)
-/**  render header end */
+    /** axis图 和 graph图 渲染完成后再设置svg的长度 */
+    this._svg
+      .attr('width', SVG_WIDTH)
+      .attr('height', AXIS_HEIGHT + BAR_TOTOL_HEIGHT)
+  }
 
-function renderRow (container) {
-  container
-    .classed('trace-row', true)
+  _bindEvent () {
+    d3
+      .select(window)
+      .on('resize', () => {
+        this._renderView()
+      })
+  }
 
-  const leftCol = container
-    .append('div')
-    .classed('trace-left-col', true)
-    // .text('table-left')
+  _destory () {
+    d3
+      .select(window)
+      .on('resize', null)
+  }
 
-  const rightCol = container
-    .append('div')
-    .classed('trace-right-col', true)
-  return {
-    leftCol,
-    rightCol,
+  render () {
+
   }
 }
+
+new Trace(document.body)
+
+/**  render header start */
+// const headerWrapper = mainWrapper.append('div')
+//   .classed('view-header', true)
+/**  render header end */
+
+// function renderRow (container) {
+//   container
+//     .classed('trace-row', true)
+
+//   const leftCol = container
+//     .append('div')
+//     .classed('trace-left-col', true)
+//     // .text('table-left')
+
+//   const rightCol = container
+//     .append('div')
+//     .classed('trace-right-col', true)
+//   return {
+//     leftCol,
+//     rightCol,
+//   }
+// }
 
 // const { leftCol, rightCol } = renderRow(headerWrapper)
 
@@ -155,38 +164,36 @@ function renderRow (container) {
 
 /** render body start */
 
-function renderBody (spans) {
-  for (let i = 0; i < spans.length; i++) {
-    const { leftCol, rightCol } = renderRow(
-      mainWrapper.append('div'),
-    )
+// function renderBody (spans) {
+//   for (let i = 0; i < spans.length; i++) {
+//     const { leftCol, rightCol } = renderRow(
+//       mainWrapper.append('div'),
+//     )
 
-    leftCol
-      .classed('left-col-span', true)
+//     leftCol
+//       .classed('left-col-span', true)
 
-    leftCol
+//     leftCol
 
 
-    const btnWrapper = leftCol
-      .append('div')
+//     const btnWrapper = leftCol
+//       .append('div')
 
-    btnWrapper
-      .append('button')
-      .text('^')
+//     btnWrapper
+//       .append('button')
+//       .text('^')
 
-    btnWrapper
-      .append('a')
-      .text(spans[i].label)
-      .attr('style', `margin-left: ${spans[i].deep * 40}px `)
+//     btnWrapper
+//       .append('a')
+//       .text(spans[i].label)
+//       .attr('style', `margin-left: ${spans[i].deep * 40}px `)
 
-    if (spans[i].children && spans[i].children.length) {
-      renderBody(spans[i].children)
-    }
-  }
-}
+//     if (spans[i].children && spans[i].children.length) {
+//       renderBody(spans[i].children)
+//     }
+//   }
+// }
 
 // renderBody(data)
 
-export default {
-  Axis,
-}
+export default Trace

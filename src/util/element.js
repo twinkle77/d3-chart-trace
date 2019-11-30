@@ -11,6 +11,7 @@ export function query (el) {
     if (!selected) {
       process.env.NODE_ENV !== 'production' && warn(`Cannot find element: ${el}`)
       const oDiv = document.createElement('div')
+      oDiv.setAttribute('class', `d3-trace-${el}`)
       document.body.appendChild(oDiv)
       return oDiv
     }
