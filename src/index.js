@@ -68,16 +68,18 @@ function setup () {
     .render()
   const AXIS_HEIGHT = axis.getChartHeight()
 
-  bar.render({
-    chartWidth: SVG_WIDTH,
-  })
+  bar
+    .setChartWidth(SVG_WIDTH)
+    .render()
   const BAR_TOTOL_HEIGHT = bar.getChartHeight()
 
 
-  brush.render({
-    brushWidth: SVG_WIDTH,
-    brushHeight: BAR_TOTOL_HEIGHT,
-  })
+  brush
+    .setBrushView({
+      brushWidth: SVG_WIDTH,
+      brushHeight: BAR_TOTOL_HEIGHT,
+    })
+    .render()
 
   /** axis图 和 graph图 渲染完成后再设置svg的长度 */
   svg

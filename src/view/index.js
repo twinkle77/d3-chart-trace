@@ -1,14 +1,12 @@
+/* eslint-disable class-methods-use-this */
 import d3 from '@/d3'
+import { getClass } from '../util/element'
 
 /**
  * 功能：
- * 用于渲染页面的布局
+ * 用于构造布局
  */
 class View {
-  constructor (className = 'd3-trace') {
-    this._className = className
-  }
-
   /**
    * 创建基础容器
    * @param {Element} target
@@ -17,15 +15,15 @@ class View {
     const mainWrapper = d3
       .select(target)
       .append('div')
-      .classed(this._getClass('wrapper'), true)
+      .classed(getClass('wrapper'), true)
 
     const graphWrapper = mainWrapper
       .append('div')
-      .classed(this._getClass('graph'), true)
+      .classed(getClass('graph'), true)
 
     const traceWrapper = mainWrapper
       .append('div')
-      .classed(this._getClass('table'), true)
+      .classed(getClass('table'), true)
 
     return {
       mainWrapper,
@@ -55,10 +53,6 @@ class View {
 
   createTableCol () {
 
-  }
-
-  _getClass (className) {
-    return `${this._className}-${className}`
   }
 }
 

@@ -1,7 +1,6 @@
 import d3 from '../d3'
 import { getClass } from '../util/element'
 
-
 /**
  * 坐标轴的朝向
  */

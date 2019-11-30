@@ -1,4 +1,4 @@
-import { select, event } from 'd3-selection'
+import { select } from 'd3-selection'
 import { format } from 'd3-format'
 import { scaleLinear } from 'd3-scale'
 import { extent, max, min } from 'd3-array'
@@ -12,7 +12,6 @@ import {
 
 export default {
   select,
-  event,
   format,
   scaleLinear,
   extent,

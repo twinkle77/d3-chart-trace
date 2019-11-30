@@ -116,9 +116,13 @@ export default class Bar {
     return this.chartHeight
   }
 
-  render ({ chartWidth }) {
+  setChartWidth (chartWidth) {
     this._options.chartWidth = chartWidth
     this._computeXscale()
+    return this
+  }
+
+  render () {
     this._drawLines()
     this._drawRects()
   }
