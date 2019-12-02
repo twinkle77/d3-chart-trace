@@ -37,17 +37,17 @@
     "rollup": "^1.26.4",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-eslint": "^7.0.0",
+    "rollup-plugin-less": "^1.1.2",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.1.2"
   },
   "dependencies": {
-    "d3": "^5.14.2",
     "d3-array": "^2.4.0",
     "d3-axis": "^1.0.12",
     "d3-brush": "^1.1.5",
     "d3-format": "^1.4.2",
+    "d3-hierarchy": "^1.1.9",
     "d3-scale": "^3.2.1",
-    "d3-selection": "^1.4.1",
-    "rollup-plugin-less": "^1.1.2"
+    "d3-selection": "^1.4.1"
   }
 }

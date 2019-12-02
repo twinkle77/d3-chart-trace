@@ -9,6 +9,7 @@ import {
   axisBottom,
   axisLeft,
 } from 'd3-axis'
+import { hierarchy } from 'd3-hierarchy'
 
 export default {
   select,
@@ -22,4 +23,5 @@ export default {
   axisRight,
   axisBottom,
   axisLeft,
+  hierarchy,
 }
