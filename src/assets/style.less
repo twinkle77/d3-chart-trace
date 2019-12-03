@@ -1,13 +1,50 @@
 .d3-trace-wrapper {
   width: 100%;
   height: auto;
+  // graph start
   .d3-trace-graph {
     width: 100%;
   }
+
+  // table start
   .d3-trace-table {
     width: 100%;
+    .d3-trace-table-header {
+      border: 1px solid #ccc;
+      .d3-trace-table-left-col {
+        border-right:  1px solid #ccc;
+      }
+    }
+    .d3-trace-table-body {
+      .d3-trace-table-row {
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        .d3-trace-table-left-col {
+          border-right: 1px solid #ccc;
+        }
+      }
+      .d3-trace-table-row:last-child {
+        border-bottom: 1px solid #ccc;
+      }
+    }
+
+    .d3-trace-table-row {
+      display: flex;
+      flex-direction: row;
+      color:rgba(0,0,0,.65);
+      .d3-trace-table-left-col {
+        flex-basis: 25%;
+      }
+      .d3-trace-table-right-col {
+        flex-basis: 75%;
+      }
+      .d3-trace-table-col {
+        box-sizing: border-box;
+      }
+    }
   }
 
+  // axis start
   .d3-trace-axis-container {
     .tick {
       text {
@@ -16,29 +53,12 @@
     }
   }
 
+  // bar start
   .d3-trace-bar-container {
     .d3-trace-bar-line {
       stroke: black;
       shape-rendering: crispEdges;
       stroke-opacity: .2;
     }
-  }
-
-  .trace-row {
-    display: flex;
-    flex-direction: row;
-    border: 1px solid #ccc;
-    height: 30px;
-    .trace-left-col {
-      flex-basis: 25%;
-    }
-    .trace-right-col {
-      flex-basis: 75%;
-      border-left: 1px solid #ccc;
-    }
-  }
-
-  .left-col-span {
-    overflow: hidden;
   }
 }
