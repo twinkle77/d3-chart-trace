@@ -1,3 +1,4 @@
+import { event } from 'd3-selection'
 import d3 from '../d3'
 import { getClass } from '../util/element'
 
@@ -7,8 +8,19 @@ export default class Brush {
 
     this._offset = options.offset || { top: 0, left: 0 }
 
-    this._brushHandler = options.brush || function brush () {}
-    this._brushEndHandler = options.brushEnd || function brushEnd () {}
+    const brushHandler = options.brush || function brush () {}
+    this._brushHandler = function _brushHandler () {
+      brushHandler(event.selection)
+    }
+
+    const brushEndHandler = options.brushEnd || function brushEnd () {}
+    this._brushEndHandler = function _endHandler () {
+      let domain = null
+      if (event.selection && options.xScale) {
+        domain = event.selection.map((i) => options.xScale.invert(i))
+      }
+      brushEndHandler(event.selection, domain)
+    }
 
     this._init()
   }

@@ -2,12 +2,14 @@ import './assets/style.less'
 import data from './data'
 import view from './view/index'
 import { query } from './util/element'
+import { isFunction } from './util/tool'
 import Graph from './graph/index'
 import Table from './table/index'
 
 class Trace {
-  constructor (target = 'target') {
+  constructor (target = 'target', options = {}) {
     this._init(target)
+    this._options = options
   }
 
   _init (target) {
@@ -25,6 +27,10 @@ class Trace {
     this._tableWrapper = tableWrapper
   }
 
+  _brushEndHandler (selection, domain) {
+    isFunction(this._options.brushEnd) && this._options.brushEnd(selection, domain)
+  }
+
   render () {
     const table = new Table(this._tableWrapper, {
       data,
@@ -33,12 +39,17 @@ class Trace {
 
     const graph = new Graph(this._graphWrapper, {
       data,
+      brushEnd: this._brushEndHandler.bind(this),
     })
     graph.render()
   }
 }
 
-const instance = new Trace(document.body)
+const instance = new Trace(document.body, {
+  brushEnd (selection, domain) {
+    console.log(selection, domain)
+  },
+})
 instance.render()
 
 export default Trace

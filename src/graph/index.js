@@ -9,6 +9,7 @@ class Graph {
   constructor (target, options = {}) {
     this._target = target
     this._data = options.data || {}
+    this._options = options
     /**
      * 插入画布
      */
@@ -54,6 +55,8 @@ class Graph {
         top: 20,
         left: 0,
       },
+      brushEnd: this._options.brushEnd,
+      xScale: axis.scale(),
     })
     this._brush = brush
   }
@@ -73,7 +76,6 @@ class Graph {
       .setChartWidth(SVG_WIDTH)
       .render()
     const BAR_TOTOL_HEIGHT = this._bar.getChartHeight()
-
 
     this._brush
       .setBrushView({
