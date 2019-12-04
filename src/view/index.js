@@ -21,14 +21,14 @@ class View {
       .append('div')
       .classed(getClass('graph'), true)
 
-    const traceWrapper = mainWrapper
+    const tableWrapper = mainWrapper
       .append('div')
       .classed(getClass('table'), true)
 
     return {
       mainWrapper,
       graphWrapper,
-      traceWrapper,
+      tableWrapper,
     }
   }
 
@@ -36,23 +36,43 @@ class View {
     return target
       .append('svg')
       .attr('width', '100%')
-      // .attr('height', '120px')
   }
 
-  createTableHeader () {
-
+  createTableHeader (target) {
+    return target
+      .append('div')
+      .classed(getClass('table-header'), true)
   }
 
-  createTableBody () {
-
+  createTableBody (target) {
+    return target
+      .append('div')
+      .classed(getClass('table-body'), true)
   }
 
-  createTableRow () {
-
+  createTableRow (target) {
+    const rowEl = target
+      .append('div')
+      .classed(getClass('table-row'), true)
+    const leftCol = rowEl
+      .append('div')
+      .classed(getClass('table-left-col'), true)
+      .classed(getClass('table-col'), true)
+    const rightCol = rowEl
+      .append('div')
+      .classed(getClass('table-right-col table-col'), true)
+      .classed(getClass('table-col'), true)
+    return {
+      leftCol,
+      rightCol,
+      row: rowEl,
+    }
   }
 
-  createTableCol () {
-
+  createSpan (target) {
+    return target
+      .append('span')
+      .classed(getClass('text'), true)
   }
 }
 

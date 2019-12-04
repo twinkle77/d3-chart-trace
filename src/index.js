@@ -7,7 +7,13 @@ import Axis from './graph/axis'
 import Bar from './graph/bar'
 import Brush from './graph/brush'
 
-import { getElementRect, query } from './util/element'
+import { getElementRect, query, getClass } from './util/element'
+
+const copyData = JSON.parse(JSON.stringify(data))
+
+for (let i = 0; i < copyData.length; i++) {
+  copyData[i] = d3.hierarchy(copyData[i])
+}
 
 class Trace {
   constructor (target = 'target', options = {}) {
@@ -17,17 +23,84 @@ class Trace {
   _init (target) {
     this._insertLayout(target)
     this._initGraph()
+
+    this._renderTableHeader()
+    this._renderTableBody()
+
     this._renderView()
     this._bindEvent()
+  }
+
+  _renderTableHeader () {
+    const tableHeader = view.createTableHeader(this._tableWrapper)
+    const { leftCol, rightCol } = view.createTableRow(tableHeader)
+    leftCol.text('header-left-col')
+    rightCol.text('header-right-col')
+  }
+
+  _renderTableBody () {
+    const paddingLeft = 15
+    const tableBody = view.createTableBody(this._tableWrapper)
+
+    const ROW_HEIGHT = 30
+
+    const allNodes = []
+    const allRows = []
+    // return
+
+    for (let i = 0; i < copyData.length; i++) {
+      const rootNode = copyData[i]
+
+      rootNode.eachBefore((node) => {
+        const { leftCol, row } = view.createTableRow(tableBody)
+
+        row.attr('style', `height: ${ROW_HEIGHT}px`)
+
+        leftCol
+          .attr('style', `padding-left: ${paddingLeft * node.depth}px`)
+
+        view
+          .createSpan(leftCol)
+          .text(node.data.label)
+
+        allNodes.push(node)
+        allRows.push(row)
+      })
+    }
+    const [minStartTime, maxEndTime] = [
+      d3.min(data, (d) => d.startTime),
+      d3.max(data, (d) => d.endTime),
+    ]
+    const rowWidth = getElementRect(allRows[0].node()).width
+    // console.log('rowWidth', minStartTime, maxEndTime, rowWidth)
+    const RECT_HEIGHT = 12
+    const xScale = d3.scaleLinear().domain([minStartTime, maxEndTime]).range([0, rowWidth])
+    const rectEls = tableBody
+      .selectAll(`.${getClass('table-right-col')}`)
+      .data(allNodes)
+      .append('svg')
+      .attr('width', '100%')
+      .attr('height', ROW_HEIGHT)
+      .append('rect')
+      .attr('x', (node) => xScale(node.data.startTime))
+      .attr('y', ROW_HEIGHT / 2 - RECT_HEIGHT / 2)
+      .attr('width', (node) => xScale(node.data.endTime) - xScale(node.data.startTime))
+      .attr('height', RECT_HEIGHT)
+
+    rectEls
+      .exit()
+      .remove()
   }
 
   _insertLayout (target) {
     const {
       mainWrapper,
       graphWrapper,
+      tableWrapper,
     } = view.createContainer(target)
     this._mainWrapper = mainWrapper
     this._graphWrapper = graphWrapper
+    this._tableWrapper = tableWrapper
 
     /**
      * 插入画布
@@ -111,7 +184,7 @@ class Trace {
       })
   }
 
-  _destory () {
+  destory () {
     d3
       .select(window)
       .on('resize', null)
@@ -122,7 +195,11 @@ class Trace {
   }
 }
 
-new Trace(document.body)
+const oDiv = document.createElement('div')
+oDiv.setAttribute('class', 'target')
+document.body.append(oDiv)
+
+new Trace(oDiv)
 
 /**  render header start */
 // const headerWrapper = mainWrapper.append('div')
