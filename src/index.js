@@ -58,9 +58,13 @@ class Trace {
   }
 
   _computedTimeRange () {
+    const descendants = []
+    this._treeData.forEach((rootNode) => {
+      descendants.push(...rootNode.descendants())
+    })
     return [
-      d3.min(this.options.data, (d) => d.startTime),
-      d3.max(this.options.data, (d) => d.endTime),
+      d3.min(descendants, (node) => node.data.startTime),
+      d3.max(descendants, (node) => node.data.endTime),
     ]
   }
 
@@ -74,6 +78,7 @@ class Trace {
 
     const graph = new Graph(this._graphWrapper, {
       data: this.options.data,
+      treeData: this._treeData,
       brushEnd: this._brushEndHandler.bind(this),
       timeRange: [minStartTime, maxEndTime],
     })

@@ -8,36 +8,32 @@ import d3 from '../d3'
 class Graph {
   constructor (target, options = {}) {
     this._target = target
-    this._data = options.data || {}
 
-    const [minStartTime, maxEndTime] = options.timeRange || []
-    this._maxEndTime = maxEndTime
-    this._minStartTime = minStartTime
+    this.options = options
 
-    this._brushEnd = options.brushEnd
-
-    /**
-     * 插入画布
-     */
-    const svg = view.createSvg(target)
-    this._svg = svg
-
-    this._init()
+    this._init(target)
   }
 
   _init () {
+    /**
+     * 插入画布
+     */
+    const svg = view.createSvg(this._target)
+    this._svg = svg
+
     this._initGraph()
     this._bindEvent()
   }
 
   _initGraph () {
+    const [minStartTime, maxEndTime] = this.options.timeRange
     /**
      * 初始化axis图
      */
     const axis = new Axis(this._svg)
     axis
       .tickSize(3)
-      .domain([this._minStartTime, this._maxEndTime])
+      .domain([minStartTime, maxEndTime])
       .tickFormat((d) => `${d}ms`)
     this._axis = axis
 
@@ -45,11 +41,12 @@ class Graph {
      * 初始化bar图
      */
     const bar = new Bar(this._svg, {
-      data: this._data,
+      treeData: this.options.treeData,
       offset: {
         top: 20,
         left: 0,
       },
+      timeRange: [minStartTime, maxEndTime],
     })
     this._bar = bar
 
@@ -61,7 +58,7 @@ class Graph {
         top: 20,
         left: 0,
       },
-      brushEnd: this._brushEnd,
+      brushEnd: this.options.brushEnd,
       xScale: axis.scale(),
     })
     this._brush = brush

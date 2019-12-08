@@ -56,7 +56,7 @@ export default [
                                 deep: 7,
                                 children: [
                                   {
-                                    id: 1.1, startTime: 20, endTime: 30, label: 'haha1', deep: 8,
+                                    id: 1.1, startTime: 1, endTime: 30, label: 'haha1', deep: 8,
                                   },
                                   {
                                     id: 1.2, startTime: 20, endTime: 30, label: 'haha2', deep: 8,
@@ -105,7 +105,7 @@ export default [
     id: 3, startTime: 90, endTime: 91, label: 'hahahaha', children: [], deep: 0,
   },
   {
-    id: 4, startTime: 0, endTime: 25, label: 'hahahaha', children: [], deep: 0,
+    id: 4, startTime: 2, endTime: 25, label: 'hahahaha', children: [], deep: 0,
   },
   {
     id: 5, startTime: 22, endTime: 23, label: 'hahahaha', children: [], deep: 0,
