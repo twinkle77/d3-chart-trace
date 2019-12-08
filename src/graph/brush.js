@@ -34,6 +34,8 @@ export default class Brush {
     this._brushInstance = d3.brushX()
       .on('brush', this._brushHandler)
       .on('end', this._brushEndHandler)
+
+    this._bindEvent()
   }
 
   setBrushView ({ brushWidth, brushHeight }) {
@@ -45,6 +47,9 @@ export default class Brush {
   destory () {
     this._brushInstance.on('brush', null)
     this._brushInstance.on('end', null)
+    d3
+      .select(window)
+      .on('resize.brush', null)
   }
 
   clearBrush () {
@@ -53,6 +58,13 @@ export default class Brush {
 
   render () {
     this._brushContainer.call(this._brushInstance)
-    this.clearBrush()
+  }
+
+  _bindEvent () {
+    d3
+      .select(window)
+      .on('resize.brush', () => {
+        this.clearBrush()
+      })
   }
 }

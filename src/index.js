@@ -28,11 +28,19 @@ class Trace {
     this._tableWrapper = tableWrapper
   }
 
+  /**
+   * brush end 时触发
+   * @param {Array} selection 刷子所选的范围
+   * @param {Array} domain 刷子所选的比例尺范围
+   */
   _brushEndHandler (selection, domain) {
     if (selection && domain && this._table) {
+      // 重渲染rect
       this._table.resetRectWidth(domain, selection)
+    } else {
+      // 重置
+      this._table.resetRectWidth()
     }
-    console.log(selection, domain)
 
     isFunction(this._options.brushEnd) && this._options.brushEnd(selection, domain)
   }
