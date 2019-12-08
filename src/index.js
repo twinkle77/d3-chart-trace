@@ -1,5 +1,6 @@
 import './assets/style.less'
-import data from './data'
+import extend from 'extend'
+import d from './data'
 import view from './view/index'
 import { query } from './util/element'
 import { isFunction } from './util/tool'
@@ -9,12 +10,23 @@ import d3 from './d3'
 
 class Trace {
   constructor (target = 'target', options = {}) {
+    this.options = extend(true, {}, options)
+
     this._init(target)
-    this._options = options
   }
 
   _init (target) {
     this._insertLayout(query(target))
+    this._genData()
+  }
+
+  _genData () {
+    const { data = [] } = this.options
+
+    this._treeData = []
+    data.forEach((rootData, index) => {
+      this._treeData[index] = d3.hierarchy(rootData)
+    })
   }
 
   _insertLayout (target) {
@@ -42,26 +54,26 @@ class Trace {
       this._table.resetRectWidth()
     }
 
-    isFunction(this._options.brushEnd) && this._options.brushEnd(selection, domain)
+    isFunction(this.options.brushEnd) && this.options.brushEnd(selection, domain)
   }
 
   _computedTimeRange () {
     return [
-      d3.min(data, (d) => d.startTime),
-      d3.max(data, (d) => d.endTime),
+      d3.min(this.options.data, (d) => d.startTime),
+      d3.max(this.options.data, (d) => d.endTime),
     ]
   }
 
   render () {
     const [minStartTime, maxEndTime] = this._computedTimeRange()
     this._table = new Table(this._tableWrapper, {
-      data,
+      treeData: this._treeData,
       timeRange: [minStartTime, maxEndTime],
     })
     this._table.render()
 
     const graph = new Graph(this._graphWrapper, {
-      data,
+      data: this.options.data,
       brushEnd: this._brushEndHandler.bind(this),
       timeRange: [minStartTime, maxEndTime],
     })
@@ -71,6 +83,7 @@ class Trace {
 
 const instance = new Trace(document.body, {
   brushEnd () {},
+  data: d,
 })
 instance.render()
 

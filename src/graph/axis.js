@@ -96,6 +96,23 @@ class Axis {
     return this.chartHeight
   }
 
+  /**
+   * 调整刻度尺上最后一个text标签的位置，避免绘制到屏幕外
+   */
+  _adjustLastTextPosition () {
+    this._axisContainer
+      .selectAll('g.tick text')
+      .attr('y', -2)
+      .attr('x', 2)
+      .each(function searchLastElement (node, index, selection) {
+        if (selection.length - 1 === index) {
+          /** 强行后退 */
+          d3.select(this)
+            .attr('x', -this.getComputedTextLength() - 2)
+        }
+      })
+  }
+
   render () {
     const axis = this._posFn()
       .scale(this._scaleFn)
@@ -108,17 +125,7 @@ class Axis {
     this._axisContainer
       .call(axis)
 
-    this._axisContainer
-      .selectAll('g.tick text')
-      .attr('y', -2)
-      .attr('x', 2)
-      .each(function searchLastElement (node, index, selection) {
-        if (selection.length - 1 === index) {
-          /** 强行后退 */
-          d3.select(this)
-            .attr('x', -this.getComputedTextLength() - 2)
-        }
-      })
+    this._adjustLastTextPosition()
   }
 
   destory () {

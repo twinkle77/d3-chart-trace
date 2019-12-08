@@ -57,7 +57,6 @@ class Graph {
      * 初始化刷子
      */
     const brush = new Brush(this._svg, {
-      data: this._data,
       offset: {
         top: 20,
         left: 0,

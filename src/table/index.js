@@ -1,24 +1,21 @@
 import view from '../view/index'
 import { getElementRect, getClass } from '../util/element'
-import data from '../data'
 import d3 from '../d3'
 
 const ROW_HEIGHT = 30
 const RECT_HEIGHT = 12
-
-const copyData = JSON.parse(JSON.stringify(data))
-
-for (let i = 0; i < copyData.length; i++) {
-  copyData[i] = d3.hierarchy(copyData[i])
-}
+const PADDING_LEFT = 2
 
 class Table {
   constructor (target, options = {}) {
-    this._data = options.data || {}
+    this._treeData = options.treeData || []
+
     this._target = target
+
     const [minStartTime, maxEndTime] = options.timeRange || []
     this._maxEndTime = maxEndTime
     this._minStartTime = minStartTime
+
     this._init()
   }
 
@@ -40,22 +37,19 @@ class Table {
   }
 
   _renderTableBody () {
-    const paddingLeft = 2
-    const tableBody = view.createTableBody(this._target)
+    this._tableBody = view.createTableBody(this._target)
 
     const allNodes = []
     const allRows = []
 
-    for (let i = 0; i < copyData.length; i++) {
-      const rootNode = copyData[i]
-
-      rootNode.eachBefore((node) => {
-        const { leftCol, row } = view.createTableRow(tableBody)
+    this._treeData.forEach((root) => {
+      root.eachBefore((node) => {
+        const { leftCol, row } = view.createTableRow(this._tableBody)
 
         row.attr('style', `height: ${ROW_HEIGHT}px`)
 
         leftCol
-          .attr('style', `padding-left: ${paddingLeft * node.depth}%`)
+          .attr('style', `padding-left: ${PADDING_LEFT * node.depth}%`)
 
         view
           .createSpan(leftCol)
@@ -64,9 +58,8 @@ class Table {
         allNodes.push(node)
         allRows.push(row)
       })
-    }
+    })
 
-    this._tableBody = tableBody
     this._allRows = allRows
     this._allNodes = allNodes
   }
