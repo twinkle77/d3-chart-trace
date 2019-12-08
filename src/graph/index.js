@@ -9,7 +9,13 @@ class Graph {
   constructor (target, options = {}) {
     this._target = target
     this._data = options.data || {}
-    this._options = options
+
+    const [minStartTime, maxEndTime] = options.timeRange || []
+    this._maxEndTime = maxEndTime
+    this._minStartTime = minStartTime
+
+    this._brushEnd = options.brushEnd
+
     /**
      * 插入画布
      */
@@ -31,7 +37,7 @@ class Graph {
     const axis = new Axis(this._svg)
     axis
       .tickSize(0)
-      .domain([1, 2])
+      .domain([this._minStartTime, this._maxEndTime])
     this._axis = axis
 
     /**
@@ -55,7 +61,7 @@ class Graph {
         top: 20,
         left: 0,
       },
-      brushEnd: this._options.brushEnd,
+      brushEnd: this._brushEnd,
       xScale: axis.scale(),
     })
     this._brush = brush

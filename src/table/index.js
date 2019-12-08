@@ -4,6 +4,7 @@ import data from '../data'
 import d3 from '../d3'
 
 const ROW_HEIGHT = 30
+const RECT_HEIGHT = 12
 
 const copyData = JSON.parse(JSON.stringify(data))
 
@@ -15,6 +16,9 @@ class Table {
   constructor (target, options = {}) {
     this._data = options.data || {}
     this._target = target
+    const [minStartTime, maxEndTime] = options.timeRange || []
+    this._maxEndTime = maxEndTime
+    this._minStartTime = minStartTime
     this._init()
   }
 
@@ -65,24 +69,13 @@ class Table {
     this._tableBody = tableBody
     this._allRows = allRows
     this._allNodes = allNodes
-
-    this._computedTimeRange()
   }
 
-  _computedTimeRange () {
-    const [minStartTime, maxEndTime] = [
-      d3.min(data, (d) => d.startTime),
-      d3.max(data, (d) => d.endTime),
-    ]
-    this._minStartTime = minStartTime
-    this._maxEndTime = maxEndTime
-  }
-
+  /**
+   * 首次绘制rect
+   */
   _renderRect () {
-    const rowWidth = getElementRect(this._allRows[0].node()).width
-    const RECT_HEIGHT = 12
-
-    const xScale = d3.scaleLinear().domain([this._minStartTime, this._maxEndTime]).range([0, rowWidth])
+    const rectTool = this._layupRect()
 
     const rectEls = this._tableBody
       .selectAll(`.${getClass('table-right-col')}`)
@@ -91,37 +84,48 @@ class Table {
       .attr('width', '100%')
       .attr('height', ROW_HEIGHT)
       .append('rect')
-      .attr('x', (node) => xScale(node.data.startTime))
-      .attr('y', ROW_HEIGHT / 2 - RECT_HEIGHT / 2)
-      .attr('width', (node) => (`${xScale(node.data.endTime) - xScale(node.data.startTime)}`))
-      .attr('height', RECT_HEIGHT)
+      .call(rectTool)
 
     rectEls
       .exit()
       .remove()
   }
 
-  _resetRectWidth () {
-    console.log('_resetRectWidth')
+  /**
+   * d3 call函数，调整绘制rect的比例尺
+   */
+  _layupRect (domain) {
     const rowWidth = getElementRect(this._allRows[0].node()).width
-    const RECT_HEIGHT = 12
+    const xScale = d3
+      .scaleLinear()
+      .domain(domain || [this._minStartTime, this._maxEndTime]).range([0, rowWidth])
 
-    const xScale = d3.scaleLinear().domain([this._minStartTime, this._maxEndTime]).range([0, rowWidth])
+    return function draw (selection) {
+      selection
+        .attr('x', (node) => xScale(node.data.startTime))
+        .attr('y', ROW_HEIGHT / 2 - RECT_HEIGHT / 2)
+        .attr('width', (node) => (`${xScale(node.data.endTime) - xScale(node.data.startTime)}`))
+        .attr('height', RECT_HEIGHT)
+    }
+  }
+
+  /**
+   * 重置rect的位置跟宽度
+   */
+  resetRectWidth (domain) {
+    const rectTool = this._layupRect(domain)
 
     this._tableBody
       .selectAll(`.${getClass('table-right-col')}`)
       .select('rect')
-      .attr('x', (node) => xScale(node.data.startTime))
-      .attr('y', ROW_HEIGHT / 2 - RECT_HEIGHT / 2)
-      .attr('width', (node) => (`${xScale(node.data.endTime) - xScale(node.data.startTime)}`))
-      .attr('height', RECT_HEIGHT)
+      .call(rectTool)
   }
 
   _bindEvent () {
     d3
       .select(window)
       .on('resize.table', () => {
-        this._resetRectWidth()
+        this.resetRectWidth()
       })
   }
 
