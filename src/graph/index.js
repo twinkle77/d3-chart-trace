@@ -93,7 +93,7 @@ class Graph {
   _bindEvent () {
     d3
       .select(window)
-      .on('resize', () => {
+      .on('resize.graph', () => {
         this.render()
       })
   }
@@ -101,7 +101,7 @@ class Graph {
   destory () {
     d3
       .select(window)
-      .on('resize', null)
+      .on('resize.graph', null)
   }
 }
 

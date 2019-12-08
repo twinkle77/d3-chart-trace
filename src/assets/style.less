@@ -33,12 +33,17 @@
     .d3-trace-table-row {
       display: flex;
       flex-direction: row;
+      flex: 0 1 auto;
       color:rgba(0,0,0,.65);
       .d3-trace-table-left-col {
         flex-basis: 25%;
+        max-width: 25%;
+        white-space: nowrap;
+        overflow: hidden;
       }
       .d3-trace-table-right-col {
         flex-basis: 75%;
+        max-width: 75%;
       }
       .d3-trace-table-col {
         box-sizing: border-box;
