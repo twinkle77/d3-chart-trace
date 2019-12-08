@@ -29,7 +29,7 @@ class Axis {
 
     this._posFn = POSITION.TOP
 
-    this._ticksCount = 5
+    this._ticksCount = 4
     this._tickSize = 5
     this._tickPaddding = 3
 
@@ -114,10 +114,12 @@ class Axis {
   }
 
   render () {
+    const [min, max] = this._scaleFn.domain()
+
     const axis = this._posFn()
       .scale(this._scaleFn)
       // 不使用ticks而使用tickValues指定刻度
-      .tickValues([...this._scaleFn.ticks(this._ticksCount), this._scaleFn.domain()[1]])
+      .tickValues([min, ...this._scaleFn.ticks(this._ticksCount), max])
       .tickSize(this._tickSize)
       .tickPadding(this._tickPaddding)
       .tickFormat(this._format)
