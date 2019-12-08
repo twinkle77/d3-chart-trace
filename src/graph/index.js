@@ -36,8 +36,9 @@ class Graph {
      */
     const axis = new Axis(this._svg)
     axis
-      .tickSize(0)
+      .tickSize(3)
       .domain([this._minStartTime, this._maxEndTime])
+      .tickFormat((d) => `${d}ms`)
     this._axis = axis
 
     /**

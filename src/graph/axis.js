@@ -43,15 +43,15 @@ class Axis {
     this.chartHeight = this._offset.left
   }
 
-  domain (min, max) {
+  domain ([min, max]) {
     if (!arguments.length) return this._scaleFn.domain()
-    this._scaleFn.domain(arguments.length > 1 ? [min, max] : min)
+    this._scaleFn.domain([min, max])
     return this
   }
 
   range (axisWidth) {
     if (!arguments.length) return this._scaleFn.range()
-    this._scaleFn.range([0, axisWidth - this._offset.left - this._offset.right])
+    this._scaleFn.range([0, axisWidth - this._offset.left - this._offset.right - 1])
 
     return this
   }
@@ -99,13 +99,26 @@ class Axis {
   render () {
     const axis = this._posFn()
       .scale(this._scaleFn)
-      .ticks(this._ticksCount)
+      // 不使用ticks而使用tickValues指定刻度
+      .tickValues([...this._scaleFn.ticks(this._ticksCount), this._scaleFn.domain()[1]])
       .tickSize(this._tickSize)
       .tickPadding(this._tickPaddding)
       .tickFormat(this._format)
 
     this._axisContainer
       .call(axis)
+
+    this._axisContainer
+      .selectAll('g.tick text')
+      .attr('y', -2)
+      .attr('x', 2)
+      .each(function searchLastElement (node, index, selection) {
+        if (selection.length - 1 === index) {
+          /** 强行后退 */
+          d3.select(this)
+            .attr('x', -this.getComputedTextLength() - 2)
+        }
+      })
   }
 
   destory () {
