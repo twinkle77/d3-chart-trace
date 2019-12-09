@@ -1,8 +1,7 @@
 import view from '../view/index'
 import { getElementRect, getClass } from '../util/element'
 import d3 from '../d3'
-
-const PADDING_LEFT = 2
+import Axis from '../graph/axis'
 
 class Table {
   constructor (target, options = {}) {
@@ -16,23 +15,42 @@ class Table {
   }
 
   _init () {
-    this._renderTableHeader()
-    this._renderTableBody()
+    this._initTableHeader()
+    this._initTableBody()
     this._bindEvent()
   }
 
   render () {
     this._renderRect()
+    this.renderHeaderAxis()
   }
 
-  _renderTableHeader () {
+  _initTableHeader () {
     const tableHeader = view.createTableHeader(this._target)
+    tableHeader
+      .attr('style', 'height: 30px;')
     const { leftCol, rightCol } = view.createTableRow(tableHeader)
     leftCol.text('header-left-col')
-    rightCol.text('header-right-col')
+
+    this._rightCol = rightCol
+    this._initRightHeader()
   }
 
-  _renderTableBody () {
+  _initRightHeader () {
+    const svg = this._rightCol
+      .append('svg')
+      .classed(getClass('header-axis'), true)
+      .attr('height', this.options.table.rowHeight)
+      .attr('width', '100%')
+
+    this._headerAxis = new Axis(svg)
+
+    this._headerAxis
+      .tickSize(3)
+      .tickFormat((d) => `${d}ms`)
+  }
+
+  _initTableBody () {
     this._tableBody = view.createTableBody(this._target)
 
     const allNodes = []
@@ -115,11 +133,24 @@ class Table {
       .call(rectTool)
   }
 
+  renderHeaderAxis (domain) {
+    const [minStartTime, maxEndTime] = this.options.timeRange
+
+    const SVG_WIDTH = getElementRect(this._rightCol.node()).width
+
+    this._headerAxis
+      .domain(domain ? domain.map((i) => parseInt(i, 10)) : [minStartTime, maxEndTime])
+      .range(SVG_WIDTH)
+      .render()
+  }
+
+
   _bindEvent () {
     d3
       .select(window)
       .on('resize.table', () => {
         this.resetRectWidth()
+        this.renderHeaderAxis()
       })
   }
 
