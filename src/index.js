@@ -7,10 +7,16 @@ import { isFunction } from './util/tool'
 import Graph from './graph/index'
 import Table from './table/index'
 import d3 from './d3'
+import config from './config'
+import { warn } from './util/debug'
 
 class Trace {
   constructor (target = 'target', options = {}) {
-    this.options = extend(true, {}, options)
+    if (!options.data) {
+      return warn('data对象必传！')
+    }
+
+    this.options = extend(true, {}, config, options)
 
     this._init(target)
   }
@@ -73,14 +79,15 @@ class Trace {
     this._table = new Table(this._tableWrapper, {
       treeData: this._treeData,
       timeRange: [minStartTime, maxEndTime],
+      table: this.options.table,
     })
     this._table.render()
 
     const graph = new Graph(this._graphWrapper, {
-      data: this.options.data,
       treeData: this._treeData,
       brushEnd: this._brushEndHandler.bind(this),
       timeRange: [minStartTime, maxEndTime],
+      graph: this.options.graph,
     })
     graph.render()
   }

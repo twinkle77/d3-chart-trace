@@ -1,3 +1,4 @@
+import extend from 'extend'
 import { getElementRect } from '../util/element'
 import view from '../view/index'
 import Axis from './axis'
@@ -30,38 +31,28 @@ class Graph {
     /**
      * 初始化axis图
      */
-    const axis = new Axis(this._svg)
-    axis
+    this._axis = new Axis(this._svg)
+    this._axis
       .tickSize(3)
       .domain([minStartTime, maxEndTime])
       .tickFormat((d) => `${d}ms`)
-    this._axis = axis
 
     /**
      * 初始化bar图
      */
-    const bar = new Bar(this._svg, {
-      treeData: this.options.treeData,
-      offset: {
-        top: 20,
-        left: 0,
-      },
-      timeRange: [minStartTime, maxEndTime],
-    })
-    this._bar = bar
+    this._bar = new Bar(this._svg,
+      extend({
+        treeData: this.options.treeData,
+        timeRange: [minStartTime, maxEndTime],
+      }, this.options.graph.bar))
 
     /**
      * 初始化刷子
      */
-    const brush = new Brush(this._svg, {
-      offset: {
-        top: 20,
-        left: 0,
-      },
+    this._brush = new Brush(this._svg, extend({
       brushEnd: this.options.brushEnd,
-      xScale: axis.scale(),
-    })
-    this._brush = brush
+      xScale: this._axis.scale(),
+    }, this.options.graph.brush))
   }
 
   render () {

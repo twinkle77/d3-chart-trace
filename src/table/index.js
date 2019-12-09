@@ -2,8 +2,6 @@ import view from '../view/index'
 import { getElementRect, getClass } from '../util/element'
 import d3 from '../d3'
 
-const ROW_HEIGHT = 30
-const RECT_HEIGHT = 12
 const PADDING_LEFT = 2
 
 class Table {
@@ -12,9 +10,7 @@ class Table {
 
     this._target = target
 
-    const [minStartTime, maxEndTime] = options.timeRange || []
-    this._maxEndTime = maxEndTime
-    this._minStartTime = minStartTime
+    this.options = options
 
     this._init()
   }
@@ -46,10 +42,10 @@ class Table {
       root.eachBefore((node) => {
         const { leftCol, row } = view.createTableRow(this._tableBody)
 
-        row.attr('style', `height: ${ROW_HEIGHT}px`)
+        row.attr('style', `height: ${this.options.table.rowHeight}px`)
 
         leftCol
-          .attr('style', `padding-left: ${PADDING_LEFT * node.depth}%`)
+          .attr('style', `padding-left: ${this.options.table.paddingLeft * node.depth}%`)
 
         view
           .createSpan(leftCol)
@@ -75,7 +71,7 @@ class Table {
       .data(this._allNodes)
       .append('svg')
       .attr('width', '100%')
-      .attr('height', ROW_HEIGHT)
+      .attr('height', this.options.table.rowHeight)
       .append('rect')
       .call(rectTool)
 
@@ -88,17 +84,22 @@ class Table {
    * d3 call函数，调整绘制rect的比例尺
    */
   _layupRect (domain) {
+    const [minStartTime, maxEndTime] = this.options.timeRange
+
     const rowWidth = getElementRect(this._allRows[0].node()).width
+
     const xScale = d3
       .scaleLinear()
-      .domain(domain || [this._minStartTime, this._maxEndTime]).range([0, rowWidth])
+      .domain(domain || [minStartTime, maxEndTime]).range([0, rowWidth])
+
+    const that = this
 
     return function draw (selection) {
       selection
         .attr('x', (node) => xScale(node.data.startTime))
-        .attr('y', ROW_HEIGHT / 2 - RECT_HEIGHT / 2)
+        .attr('y', that.options.table.rowHeight / 2 - that.options.table.rectHeight / 2)
         .attr('width', (node) => (`${xScale(node.data.endTime) - xScale(node.data.startTime)}`))
-        .attr('height', RECT_HEIGHT)
+        .attr('height', that.options.table.rectHeight)
     }
   }
 
