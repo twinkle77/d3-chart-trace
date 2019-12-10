@@ -61,11 +61,11 @@ class Table {
     this._tableBody = view.createTableBody(this._target)
 
     const allNodes = []
-    const allRows = []
+    const allRightRows = []
 
     this._treeData.forEach((root) => {
       root.eachBefore((node) => {
-        const { leftCol, row } = view.createTableRow(this._tableBody)
+        const { leftCol, row, rightCol } = view.createTableRow(this._tableBody)
 
         row.attr('style', `height: ${this.options.rowHeight}px`)
 
@@ -77,12 +77,12 @@ class Table {
           .text(node.data.label)
 
         allNodes.push(node)
-        allRows.push(row)
+        allRightRows.push(rightCol)
       })
     })
 
-    this._allRows = allRows
     this._allNodes = allNodes
+    this._allRightRows = allRightRows
   }
 
   /**
@@ -111,11 +111,13 @@ class Table {
   _layupRect (domain) {
     const [minStartTime, maxEndTime] = this.options.timeRange
 
-    const rowWidth = getElementRect(this._allRows[0].node()).width
+    const rowWidth = getElementRect(this._allRightRows[0].node()).width
+    console.log('rowWidth', rowWidth)
 
     const xScale = d3
       .scaleLinear()
-      .domain(domain || [minStartTime, maxEndTime]).range([0, rowWidth])
+      .domain(domain || [minStartTime, maxEndTime])
+      .range([0, rowWidth])
 
     const that = this
 

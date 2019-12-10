@@ -51,6 +51,10 @@ class Trace {
    * @param {Array} domain 刷子所选的比例尺范围
    */
   _brushEndHandler (selection, domain) {
+    console.table({
+      selection,
+      domain,
+    })
     if (selection && domain && this._table) {
       // 重渲染rect
       this._table.resetRectWidth(domain, selection)
@@ -81,14 +85,17 @@ class Trace {
       treeData: this._treeData,
       timeRange: [minStartTime, maxEndTime],
     }, this.options.table))
-    this._table.render()
 
-    const graph = new Graph(this._graphWrapper, extend({
+    this._graph = new Graph(this._graphWrapper, extend({
       treeData: this._treeData,
       brushEnd: this._brushEndHandler.bind(this),
       timeRange: [minStartTime, maxEndTime],
     }, this.options.graph))
-    graph.render()
+
+    setTimeout(() => {
+      this._table.render()
+      this._graph.render()
+    })
   }
 }
 
