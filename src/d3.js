@@ -1,7 +1,9 @@
 import { select } from 'd3-selection'
 import { format } from 'd3-format'
 import { scaleLinear } from 'd3-scale'
-import { extent, max, min } from 'd3-array'
+import {
+  extent, max, min, range,
+} from 'd3-array'
 import { brushX } from 'd3-brush'
 import {
   axisTop,
@@ -24,4 +26,5 @@ export default {
   axisBottom,
   axisLeft,
   hierarchy,
+  range,
 }
