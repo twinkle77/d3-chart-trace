@@ -31,7 +31,7 @@ class Graph {
     /**
      * 初始化axis图
      */
-    this._axis = new Axis(this._svg)
+    this._axis = new Axis(this._svg, this.options.axis)
     this._axis
       .tickSize(3)
       .domain([minStartTime, maxEndTime])
@@ -44,7 +44,7 @@ class Graph {
       extend({
         treeData: this.options.treeData,
         timeRange: [minStartTime, maxEndTime],
-      }, this.options.graph.bar))
+      }, this.options.bar))
 
     /**
      * 初始化刷子
@@ -52,7 +52,7 @@ class Graph {
     this._brush = new Brush(this._svg, extend({
       brushEnd: this.options.brushEnd,
       xScale: this._axis.scale(),
-    }, this.options.graph.brush))
+    }, this.options.brush))
   }
 
   render () {

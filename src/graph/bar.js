@@ -2,6 +2,7 @@ import extend from 'extend'
 import d3 from '../d3'
 import { getClass } from '../util/element'
 import { warn } from '../util/debug'
+import config from '../config'
 
 export default class Bar {
   constructor (target, options = {}) {
@@ -11,20 +12,9 @@ export default class Bar {
       return warn('timeRange必传')
     }
 
-    this.options = extend(true, {}, this.defaultOptions, options)
+    this.options = extend(true, {}, config.graph.bar, options)
 
     this._init()
-  }
-
-  get defaultOptions () {
-    return {
-      barHeight: 12,
-      margin: 8,
-      offset: {
-        top: 20,
-        left: 20,
-      },
-    }
   }
 
   _init () {

@@ -1,5 +1,7 @@
+import extend from 'extend'
 import d3 from '../d3'
 import { getClass } from '../util/element'
+import config from '../config'
 
 /**
  * 坐标轴的朝向
@@ -11,36 +13,31 @@ const POSITION = {
   LEFT: d3.axisLeft,
 }
 
-/**
- * 功能：
- * 1. 支持渲染各种方向的坐标轴
- * 2. 支持只渲染数值
- * 3. 支持重渲染
- */
 class Axis {
   constructor (container, options = {}) {
-    this._container = container
+    this._target = container
 
-    this._offset = options.offset || {
-      top: 20, left: 0, right: 0, bottom: 0,
-    }
+    this.options = extend(true, {}, config.graph.axis, options)
+
+    this._offset = this.options.offset
+
+    this._posFn = POSITION[this.options.pos.toUpperCase()]
+
+    this._tickCount = this.options.tickCount
+    this._tickSize = this.options.tickSize
+    this._tickPadding = this.options.tickPadding
 
     this._scaleFn = d3.scaleLinear()
+    this.chartHeight = this._offset.left
 
-    this._posFn = POSITION.TOP
+    this._init()
+  }
 
-    this._ticksCount = 4
-    this._tickSize = 5
-    this._tickPaddding = 3
-
-    this._format = d3.format(options.format || '.1f')
-
-    this._axisContainer = this._container
+  _init () {
+    this._axisContainer = this._target
       .append('g')
       .classed(getClass('axis-container'), true)
       .attr('transform', () => `translate(${this._offset.left}, ${this._offset.top})`)
-
-    this.chartHeight = this._offset.left
   }
 
   domain ([min, max]) {
@@ -57,8 +54,8 @@ class Axis {
   }
 
   ticks (number) {
-    if (!arguments.length) return this._ticksCount
-    this._ticksCount = number
+    if (!arguments.length) return this._tickCount
+    this._tickCount = number
     return this
   }
 
@@ -81,8 +78,8 @@ class Axis {
   }
 
   tickPadding (padding) {
-    if (!arguments.length) return this._tickPaddding
-    this._tickPaddding = padding
+    if (!arguments.length) return this._tickPadding
+    this._tickPadding = padding
     return this
   }
 
@@ -119,9 +116,9 @@ class Axis {
     const axis = this._posFn()
       .scale(this._scaleFn)
       // 不使用ticks而使用tickValues指定刻度
-      .tickValues([...d3.range(min, max, (max - min) / this._ticksCount), max].map((i) => parseInt(i, 10)))
+      .tickValues([...d3.range(min, max, (max - min) / this._tickCount), max].map((i) => parseInt(i, 10)))
       .tickSize(this._tickSize)
-      .tickPadding(this._tickPaddding)
+      .tickPadding(this._tickPadding)
       .tickFormat(this._format)
 
     this._axisContainer

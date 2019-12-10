@@ -1,15 +1,17 @@
+import extend from 'extend'
 import view from '../view/index'
 import { getElementRect, getClass } from '../util/element'
 import d3 from '../d3'
 import Axis from '../graph/axis'
+import config from '../config'
 
 class Table {
   constructor (target, options = {}) {
-    this._treeData = options.treeData || []
-
     this._target = target
 
-    this.options = options
+    this.options = extend(true, {}, config.table, options)
+
+    this._treeData = options.treeData || []
 
     this._init()
   }
@@ -40,10 +42,14 @@ class Table {
     const svg = this._rightCol
       .append('svg')
       .classed(getClass('header-axis'), true)
-      .attr('height', this.options.table.rowHeight)
+      .attr('height', this.options.rowHeight)
       .attr('width', '100%')
 
-    this._headerAxis = new Axis(svg)
+    this._headerAxis = new Axis(svg, {
+      offset: {
+        top: 30,
+      },
+    })
 
     this._headerAxis
       .tickSize(3)
@@ -60,10 +66,10 @@ class Table {
       root.eachBefore((node) => {
         const { leftCol, row } = view.createTableRow(this._tableBody)
 
-        row.attr('style', `height: ${this.options.table.rowHeight}px`)
+        row.attr('style', `height: ${this.options.rowHeight}px`)
 
         leftCol
-          .attr('style', `padding-left: ${this.options.table.paddingLeft * node.depth}%`)
+          .attr('style', `padding-left: ${this.options.paddingLeft * node.depth}%`)
 
         view
           .createSpan(leftCol)
@@ -89,7 +95,7 @@ class Table {
       .data(this._allNodes)
       .append('svg')
       .attr('width', '100%')
-      .attr('height', this.options.table.rowHeight)
+      .attr('height', this.options.rowHeight)
       .append('rect')
       .call(rectTool)
 
@@ -115,9 +121,9 @@ class Table {
     return function draw (selection) {
       selection
         .attr('x', (node) => xScale(node.data.startTime))
-        .attr('y', that.options.table.rowHeight / 2 - that.options.table.rectHeight / 2)
+        .attr('y', that.options.rowHeight / 2 - that.options.rectHeight / 2)
         .attr('width', (node) => (`${xScale(node.data.endTime) - xScale(node.data.startTime)}`))
-        .attr('height', that.options.table.rectHeight)
+        .attr('height', that.options.rectHeight)
     }
   }
 

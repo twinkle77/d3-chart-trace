@@ -7,7 +7,6 @@ import { isFunction } from './util/tool'
 import Graph from './graph/index'
 import Table from './table/index'
 import d3 from './d3'
-import config from './config'
 import { warn } from './util/debug'
 
 class Trace {
@@ -16,7 +15,7 @@ class Trace {
       return warn('data对象必传！')
     }
 
-    this.options = extend(true, {}, config, options)
+    this.options = extend(true, {}, options)
 
     this._init(target)
   }
@@ -52,10 +51,6 @@ class Trace {
    * @param {Array} domain 刷子所选的比例尺范围
    */
   _brushEndHandler (selection, domain) {
-    console.table({
-      selection,
-      domain,
-    })
     if (selection && domain && this._table) {
       // 重渲染rect
       this._table.resetRectWidth(domain, selection)
@@ -82,19 +77,17 @@ class Trace {
 
   render () {
     const [minStartTime, maxEndTime] = this._computedTimeRange()
-    this._table = new Table(this._tableWrapper, {
+    this._table = new Table(this._tableWrapper, extend({
       treeData: this._treeData,
       timeRange: [minStartTime, maxEndTime],
-      table: this.options.table,
-    })
+    }, this.options.table))
     this._table.render()
 
-    const graph = new Graph(this._graphWrapper, {
+    const graph = new Graph(this._graphWrapper, extend({
       treeData: this._treeData,
       brushEnd: this._brushEndHandler.bind(this),
       timeRange: [minStartTime, maxEndTime],
-      graph: this.options.graph,
-    })
+    }, this.options.graph))
     graph.render()
   }
 }

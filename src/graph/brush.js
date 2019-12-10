@@ -1,23 +1,27 @@
 import { event } from 'd3-selection'
+import extend from 'extend'
 import d3 from '../d3'
 import { getClass } from '../util/element'
+import config from '../config'
 
 export default class Brush {
   constructor (container, options = {}) {
     this._container = container
 
-    this._offset = options.offset || { top: 0, left: 0 }
+    this.options = extend(true, {}, config.graph.brush, options)
 
-    const brushHandler = options.brush || function brush () {}
+    this._offset = this.options.offset
+
+    const brushHandler = this.options.brush || function brush () {}
     this._brushHandler = function _brushHandler () {
       brushHandler(event.selection)
     }
 
-    const brushEndHandler = options.brushEnd || function brushEnd () {}
-    this._brushEndHandler = function _endHandler () {
+    const brushEndHandler = this.options.brushEnd || function brushEnd () {}
+    this._brushEndHandler = () => {
       let domain = null
-      if (event.selection && options.xScale) {
-        domain = event.selection.map((i) => options.xScale.invert(i))
+      if (event.selection && this.options.xScale) {
+        domain = event.selection.map((i) => this.options.xScale.invert(i))
       }
       brushEndHandler(event.selection, domain)
     }
