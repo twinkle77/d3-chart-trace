@@ -541,6 +541,14 @@ d3-interpolate@1, d3-interpolate@^1.2.0:
   dependencies:
     d3-color "1"
 
+d3-scale-chromatic@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.npm.taobao.org/d3-scale-chromatic/download/d3-scale-chromatic-1.5.0.tgz#54e333fc78212f439b14641fb55801dd81135a98"
+  integrity sha1-VOMz/HghL0ObFGQftVgB3YETWpg=
+  dependencies:
+    d3-color "1"
+    d3-interpolate "1"
+
 d3-scale@^3.2.1:
   version "3.2.1"
   resolved "https://registry.npm.taobao.org/d3-scale/download/d3-scale-3.2.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fd3-scale%2Fdownload%2Fd3-scale-3.2.1.tgz#da1684adce7261b4bc7a76fe193d887f0e909e69"

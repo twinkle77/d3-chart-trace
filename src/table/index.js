@@ -4,6 +4,7 @@ import { getElementRect, getClass } from '../util/element'
 import d3 from '../d3'
 import Axis from '../graph/axis'
 import config from '../config'
+import colorGenerator from '../util/colorGenerator'
 
 class Table {
   constructor (target, options = {}) {
@@ -124,6 +125,7 @@ class Table {
         .attr('y', that.options.rowHeight / 2 - that.options.rectHeight / 2)
         .attr('width', (node) => (`${xScale(node.data.endTime) - xScale(node.data.startTime)}`))
         .attr('height', that.options.rectHeight)
+        .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.id)}`)
     }
   }
 

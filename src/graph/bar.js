@@ -3,6 +3,7 @@ import d3 from '../d3'
 import { getClass } from '../util/element'
 import { warn } from '../util/debug'
 import config from '../config'
+import colorGenerator from '../util/colorGenerator'
 
 export default class Bar {
   constructor (target, options = {}) {
@@ -30,8 +31,10 @@ export default class Bar {
     } = this.options
 
     this.descendants = []
-    treeData.forEach((rootNode) => {
-      this.descendants.push(...rootNode.descendants())
+    treeData.forEach((root) => {
+      root.eachBefore((node) => {
+        this.descendants.push(node)
+      })
     })
 
     // 当条bar的高度
@@ -104,6 +107,7 @@ export default class Bar {
       .attr('y', (_, index) => this._yScale(index - 1 + 0.5) - barHeight / 2)
       .attr('width', (node) => this._xScale(node.data.endTime) - this._xScale(node.data.startTime))
       .attr('height', barHeight)
+      .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.id)}`)
 
     rectEls
       .exit()
