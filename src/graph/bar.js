@@ -23,6 +23,7 @@ export default class Bar {
     this._insertContainer()
   }
 
+  // 数据驱动改动点 5
   _initScale () {
     const {
       barHeight,

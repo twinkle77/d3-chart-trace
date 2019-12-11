@@ -57,6 +57,7 @@ class Table {
       .tickFormat((d) => `${d}ms`)
   }
 
+  // 数据驱动改动点 2
   _initTableBody () {
     this._tableBody = view.createTableBody(this._target)
 
@@ -112,7 +113,6 @@ class Table {
     const [minStartTime, maxEndTime] = this.options.timeRange
 
     const rowWidth = getElementRect(this._allRightRows[0].node()).width
-    console.log('rowWidth', rowWidth)
 
     const xScale = d3
       .scaleLinear()

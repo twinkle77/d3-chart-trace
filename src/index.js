@@ -79,11 +79,18 @@ class Trace {
     ]
   }
 
+  setOptions (newData) {
+    this.options.data = extend(true, [], newData)
+    this._genData()
+    this.render()
+  }
+
+  // 数据驱动改动点 1
   render () {
     const [minStartTime, maxEndTime] = this._computedTimeRange()
     this._table = new Table(this._tableWrapper, extend({
       treeData: this._treeData,
-      timeRange: [minStartTime, maxEndTime],
+      timeRange: [minStartTime, maxEndTime], // 数据驱动改动点 3
     }, this.options.table))
 
     this._graph = new Graph(this._graphWrapper, extend({
@@ -104,5 +111,19 @@ const instance = new Trace(document.body, {
   data: d,
 })
 instance.render()
+
+const button = document.createElement('button')
+button.innerHTML = 'tiggle'
+document.body.appendChild(button)
+
+const dataLength = d.length
+
+button.addEventListener('click', () => {
+  const data = d.slice(
+    ...[Math.floor(Math.random() * dataLength), Math.floor(Math.random() * dataLength)].sort((a, b) => a - b),
+  )
+  console.log('newData:', data)
+  instance.setOptions(data)
+}, false)
 
 export default Trace

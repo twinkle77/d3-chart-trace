@@ -26,6 +26,7 @@ class Graph {
     this._bindEvent()
   }
 
+  // 数据驱动改动点 4
   _initGraph () {
     const [minStartTime, maxEndTime] = this.options.timeRange
     /**
