@@ -25,6 +25,8 @@ class Table {
 
     this._initTableBody()
 
+    this._genData()
+
     this._bindEvent()
   }
 
@@ -77,53 +79,53 @@ class Table {
       .selectAll(`.${getClass('table-row')}`)
       .data(this._allNodes)
 
+    // enter集合
     rowEls
       .enter()
       .append('div')
       .classed(getClass('table-row'), true)
       .attr('style', `height: ${this.options.rowHeight}px`)
-      .merge(rowEls)
-      .call(this._createColumns.bind(this))
+      .call(this._createColumns().bind(this))
 
+    // update集合
+    const rectTool = this._layupRect()
+    rowEls
+      .selectAll(`.${getClass('table-right-col')}`)
+      .selectAll('rect')
+      .call(rectTool)
+
+    // exit集合
     rowEls
       .exit()
+      .transition()
       .remove()
   }
 
-  _createColumns (selection) {
+  _createColumns () {
     const rectTool = this._layupRect()
 
-    selection
-      .append('div')
-      .classed(getClass('table-left-col'), true)
-      .classed(getClass('table-col'), true)
-      .attr('style', (node) => `padding-left: ${this.options.paddingLeft * node.depth}%`)
-      .append('span')
-      .classed(getClass('text'), true)
-      .text((node) => node.data.label)
+    return function call (selection) {
+      selection
+        .append('div')
+        .classed(getClass('table-left-col'), true)
+        .classed(getClass('table-col'), true)
+        .attr('style', (node) => `padding-left: ${this.options.paddingLeft * node.depth}%`)
+        .append('span')
+        .classed(getClass('text'), true)
+        .text((node) => node.data.label)
 
-    selection
-      .append('div')
-      .classed(getClass('table-right-col'), true)
-      .classed(getClass('table-col'), true)
-      .append('svg')
-      .attr('width', '100%')
-      .attr('height', this.options.rowHeight)
-      .append('rect')
-      .call(rectTool)
+      selection
+        .append('div')
+        .classed(getClass('table-right-col'), true)
+        .classed(getClass('table-col'), true)
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', this.options.rowHeight)
+        .append('rect')
+        .call(rectTool)
 
-    return selection
-  }
-
-  _computedTimeRange () {
-    const descendants = []
-    this._treeData.forEach((rootNode) => {
-      descendants.push(...rootNode.descendants())
-    })
-    return [
-      d3.min(descendants, (node) => node.data.startTime),
-      d3.max(descendants, (node) => node.data.endTime),
-    ]
+      return selection
+    }
   }
 
   /**
@@ -151,17 +153,16 @@ class Table {
     }
   }
 
-  renderHeaderAxis (domain) {
-    const [minStartTime, maxEndTime] = this.options.timeRange
-
-    const SVG_WIDTH = getElementRect(this._rightCol.node()).width
-
-    this._headerAxis
-      .domain(domain ? domain.map((i) => parseInt(i, 10)) : [minStartTime, maxEndTime])
-      .range(SVG_WIDTH)
-      .render()
+  _computedTimeRange () {
+    const descendants = []
+    this._treeData.forEach((rootNode) => {
+      descendants.push(...rootNode.descendants())
+    })
+    return [
+      d3.min(descendants, (node) => node.data.startTime),
+      d3.max(descendants, (node) => node.data.endTime),
+    ]
   }
-
 
   _bindEvent () {
     d3
@@ -175,6 +176,17 @@ class Table {
     this._treeData = data
     this._genData()
     this.renderTableRow()
+  }
+
+  renderHeaderAxis (domain) {
+    const [minStartTime, maxEndTime] = this.options.timeRange
+
+    const SVG_WIDTH = getElementRect(this._rightCol.node()).width
+
+    this._headerAxis
+      .domain(domain ? domain.map((i) => parseInt(i, 10)) : [minStartTime, maxEndTime])
+      .range(SVG_WIDTH)
+      .render()
   }
 
   render (domain) {
