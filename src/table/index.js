@@ -14,29 +14,28 @@ class Table {
 
     this._treeData = options.treeData || []
 
+    this.options.timeRange = this._computedTimeRange()
+
     this._init()
   }
 
   _init () {
     this._initTableHeader()
-    this._initTableBody()
-    this._bindEvent()
-  }
+    this._initRightHeader()
 
-  render () {
-    this._renderRect()
-    this.renderHeaderAxis()
+    this._initTableBody()
+
+    this._bindEvent()
   }
 
   _initTableHeader () {
     const tableHeader = view.createTableHeader(this._target)
     tableHeader
-      .attr('style', 'height: 30px;')
+      .attr('style', `height: ${this.options.rowHeight}px`)
     const { leftCol, rightCol } = view.createTableRow(tableHeader)
     leftCol.text('header-left-col')
 
     this._rightCol = rightCol
-    this._initRightHeader()
   }
 
   _initRightHeader () {
@@ -57,53 +56,74 @@ class Table {
       .tickFormat((d) => `${d}ms`)
   }
 
-  // 数据驱动改动点 2
   _initTableBody () {
     this._tableBody = view.createTableBody(this._target)
+  }
 
+  _genData () {
     const allNodes = []
-    const allRightRows = []
 
     this._treeData.forEach((root) => {
       root.eachBefore((node) => {
-        const { leftCol, row, rightCol } = view.createTableRow(this._tableBody)
-
-        row.attr('style', `height: ${this.options.rowHeight}px`)
-
-        leftCol
-          .attr('style', `padding-left: ${this.options.paddingLeft * node.depth}%`)
-
-        view
-          .createSpan(leftCol)
-          .text(node.data.label)
-
         allNodes.push(node)
-        allRightRows.push(rightCol)
       })
     })
 
     this._allNodes = allNodes
-    this._allRightRows = allRightRows
   }
 
-  /**
-   * 首次绘制rect
-   */
-  _renderRect () {
+  renderTableRow () {
+    const rowEls = this._tableBody
+      .selectAll(`.${getClass('table-row')}`)
+      .data(this._allNodes)
+
+    rowEls
+      .enter()
+      .append('div')
+      .classed(getClass('table-row'), true)
+      .attr('style', `height: ${this.options.rowHeight}px`)
+      .merge(rowEls)
+      .call(this._createColumns.bind(this))
+
+    rowEls
+      .exit()
+      .remove()
+  }
+
+  _createColumns (selection) {
     const rectTool = this._layupRect()
 
-    const rectEls = this._tableBody
-      .selectAll(`.${getClass('table-right-col')}`)
-      .data(this._allNodes)
+    selection
+      .append('div')
+      .classed(getClass('table-left-col'), true)
+      .classed(getClass('table-col'), true)
+      .attr('style', (node) => `padding-left: ${this.options.paddingLeft * node.depth}%`)
+      .append('span')
+      .classed(getClass('text'), true)
+      .text((node) => node.data.label)
+
+    selection
+      .append('div')
+      .classed(getClass('table-right-col'), true)
+      .classed(getClass('table-col'), true)
       .append('svg')
       .attr('width', '100%')
       .attr('height', this.options.rowHeight)
       .append('rect')
       .call(rectTool)
 
-    rectEls
-      .exit()
-      .remove()
+    return selection
+  }
+
+  _computedTimeRange () {
+    const descendants = []
+    this._treeData.forEach((rootNode) => {
+      descendants.push(...rootNode.descendants())
+    })
+    return [
+      d3.min(descendants, (node) => node.data.startTime),
+      d3.max(descendants, (node) => node.data.endTime),
+    ]
   }
 
   /**
@@ -112,7 +132,7 @@ class Table {
   _layupRect (domain) {
     const [minStartTime, maxEndTime] = this.options.timeRange
 
-    const rowWidth = getElementRect(this._allRightRows[0].node()).width
+    const rowWidth = getElementRect(this._rightCol.node()).width
 
     const xScale = d3
       .scaleLinear()
@@ -131,18 +151,6 @@ class Table {
     }
   }
 
-  /**
-   * 重置rect的位置跟宽度
-   */
-  resetRectWidth (domain) {
-    const rectTool = this._layupRect(domain)
-
-    this._tableBody
-      .selectAll(`.${getClass('table-right-col')}`)
-      .select('rect')
-      .call(rectTool)
-  }
-
   renderHeaderAxis (domain) {
     const [minStartTime, maxEndTime] = this.options.timeRange
 
@@ -159,9 +167,19 @@ class Table {
     d3
       .select(window)
       .on('resize.table', () => {
-        this.resetRectWidth()
-        this.renderHeaderAxis()
+        this.render()
       })
+  }
+
+  setOptions (data) {
+    this._treeData = data
+    this._genData()
+    this.renderTableRow()
+  }
+
+  render (domain) {
+    this.renderTableRow()
+    this.renderHeaderAxis(domain)
   }
 
   destory () {

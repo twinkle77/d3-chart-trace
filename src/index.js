@@ -23,6 +23,7 @@ class Trace {
   _init (target) {
     this._insertLayout(query(target))
     this._genData()
+    this._initChart()
   }
 
   _genData () {
@@ -32,6 +33,20 @@ class Trace {
     data.forEach((rootData, index) => {
       this._treeData[index] = d3.hierarchy(rootData)
     })
+  }
+
+  _initChart () {
+    const [minStartTime, maxEndTime] = this._computedTimeRange()
+
+    this._table = new Table(this._tableWrapper, extend({
+      treeData: this._treeData,
+    }, this.options.table))
+
+    this._graph = new Graph(this._graphWrapper, extend({
+      treeData: this._treeData,
+      brushEnd: this._brushEndHandler.bind(this),
+      timeRange: [minStartTime, maxEndTime],
+    }, this.options.graph))
   }
 
   _insertLayout (target) {
@@ -57,12 +72,14 @@ class Trace {
     })
     if (selection && domain && this._table) {
       // 重渲染rect
-      this._table.resetRectWidth(domain, selection)
-      this._table.renderHeaderAxis(domain)
+      // this._table.resetRectWidth(domain, selection)
+      // this._table.renderHeaderAxis(domain)
+      this._table.render(domain)
     } else {
       // 重置
-      this._table.resetRectWidth()
-      this._table.renderHeaderAxis()
+      // this._table.resetRectWidth()
+      // this._table.renderHeaderAxis()
+      this._table.render()
     }
 
     isFunction(this.options.brushEnd) && this.options.brushEnd(selection, domain)
@@ -82,23 +99,11 @@ class Trace {
   setOptions (newData) {
     this.options.data = extend(true, [], newData)
     this._genData()
-    this.render()
+    this._table.setOptions(this._treeData)
   }
 
   // 数据驱动改动点 1
   render () {
-    const [minStartTime, maxEndTime] = this._computedTimeRange()
-    this._table = new Table(this._tableWrapper, extend({
-      treeData: this._treeData,
-      timeRange: [minStartTime, maxEndTime], // 数据驱动改动点 3
-    }, this.options.table))
-
-    this._graph = new Graph(this._graphWrapper, extend({
-      treeData: this._treeData,
-      brushEnd: this._brushEndHandler.bind(this),
-      timeRange: [minStartTime, maxEndTime],
-    }, this.options.graph))
-
     setTimeout(() => {
       this._table.render()
       this._graph.render()

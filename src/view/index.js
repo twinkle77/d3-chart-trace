@@ -69,11 +69,11 @@ class View {
     }
   }
 
-  createSpan (target) {
-    return target
-      .append('span')
-      .classed(getClass('text'), true)
-  }
+  // createSpan (target) {
+  //   return target
+  //     .append('span')
+  //     .classed(getClass('text'), true)
+  // }
 }
 
 export default new View()
