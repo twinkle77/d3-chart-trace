@@ -11,7 +11,7 @@ import { warn } from './util/debug'
 
 class Trace {
   constructor (target = 'target', options = {}) {
-    if (isArray(options.data) && options.data.length === 0) {
+    if (!options.data || (isArray(options.data) && options.data.length === 0)) {
       return warn('数据格式不符合！')
     }
 
@@ -36,8 +36,6 @@ class Trace {
   }
 
   _initChart () {
-    const [minStartTime, maxEndTime] = this._computedTimeRange()
-
     this._table = new Table(this._tableWrapper, extend({
       treeData: this._treeData,
     }, this.options.table))
@@ -45,7 +43,6 @@ class Trace {
     this._graph = new Graph(this._graphWrapper, extend({
       treeData: this._treeData,
       brushEnd: this._brushEndHandler.bind(this),
-      timeRange: [minStartTime, maxEndTime],
     }, this.options.graph))
   }
 
@@ -71,20 +68,9 @@ class Trace {
     isFunction(this.options.brushEnd) && this.options.brushEnd(selection, domain)
   }
 
-  _computedTimeRange () {
-    const descendants = []
-    this._treeData.forEach((rootNode) => {
-      descendants.push(...rootNode.descendants())
-    })
-    return [
-      d3.min(descendants, (node) => node.data.startTime),
-      d3.max(descendants, (node) => node.data.endTime),
-    ]
-  }
-
   // eslint-disable-next-line consistent-return
   setOptions (newData) {
-    if (isArray(newData) && newData.length === 0) {
+    if (!newData || (isArray(newData) && newData.length === 0)) {
       return warn('数据格式不符合！')
     }
 
