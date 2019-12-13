@@ -19,7 +19,7 @@ class Table {
   }
 
   _init () {
-    this._genData()
+    this._transformData()
 
     this._initTableHeader()
     this._initRightHeader()
@@ -47,6 +47,7 @@ class Table {
       .attr('width', '100%')
 
     this._headerAxis = new Axis(svg, {
+      treeData: this.options.treeData,
       offset: {
         top: 30,
       },
@@ -61,7 +62,7 @@ class Table {
     this._tableBody = view.createTableBody(this._target)
   }
 
-  _genData () {
+  _transformData () {
     const allNodes = []
 
     this._treeData.forEach((root) => {
@@ -160,18 +161,18 @@ class Table {
 
   setOptions (data) {
     this._treeData = data
-    this._genData()
+    this._transformData()
     this.render()
   }
 
   renderHeaderAxis (domain) {
     const [minStartTime, maxEndTime] = this.options.timeRange
 
-    const SVG_WIDTH = getElementRect(this._rightCol.node()).width
+    const svgWidth = getElementRect(this._rightCol.node()).width
 
     this._headerAxis
       .domain(domain ? domain.map((i) => parseInt(i, 10)) : [minStartTime, maxEndTime])
-      .range(SVG_WIDTH)
+      .setChartWidth(svgWidth)
       .render()
   }
 

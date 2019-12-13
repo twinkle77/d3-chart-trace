@@ -2,6 +2,7 @@ import extend from 'extend'
 import d3 from '../d3'
 import { getClass } from '../util/element'
 import config from '../config'
+import { computedTimeRange } from '../util/tool'
 
 /**
  * 坐标轴的朝向
@@ -14,30 +15,36 @@ const POSITION = {
 }
 
 class Axis {
-  constructor (container, options = {}) {
-    this._target = container
+  constructor (target, options = {}) {
+    this._target = target
 
     this.options = extend(true, {}, config.graph.axis, options)
 
-    this._offset = this.options.offset
-
     this._posFn = POSITION[this.options.pos.toUpperCase()]
 
-    this._tickCount = this.options.tickCount
-    this._tickSize = this.options.tickSize
-    this._tickPadding = this.options.tickPadding
-
     this._scaleFn = d3.scaleLinear()
-    this.chartHeight = this._offset.left
 
     this._init()
   }
 
   _init () {
+    this._transformData()
+
     this._axisContainer = this._target
       .append('g')
       .classed(getClass('axis-container'), true)
-      .attr('transform', () => `translate(${this._offset.left}, ${this._offset.top})`)
+      .attr('transform', () => `translate(${this.options.offset.left}, ${this.options.offset.top})`)
+  }
+
+  _transformData () {
+    const allNodes = []
+    this.options.treeData.forEach((root) => {
+      root.eachBefore((node) => {
+        allNodes.push(node)
+      })
+    })
+    this._allNodes = allNodes
+    this.domain(computedTimeRange(allNodes))
   }
 
   domain ([min, max]) {
@@ -46,22 +53,21 @@ class Axis {
     return this
   }
 
-  range (axisWidth) {
+  range (widthRange) {
     if (!arguments.length) return this._scaleFn.range()
-    this._scaleFn.range([0, axisWidth - this._offset.left - this._offset.right - 1])
-
+    this._scaleFn.range(widthRange)
     return this
   }
 
   ticks (number) {
-    if (!arguments.length) return this._tickCount
-    this._tickCount = number
+    if (!arguments.length) return this.options.tickCount
+    this.options.tickCount = number
     return this
   }
 
   tickSize (size) {
-    if (!arguments.length) return this._tickSize
-    this._tickSize = size
+    if (!arguments.length) return this.options.tickSize
+    this.options.tickSize = size
     return this
   }
 
@@ -78,8 +84,8 @@ class Axis {
   }
 
   tickPadding (padding) {
-    if (!arguments.length) return this._tickPadding
-    this._tickPadding = padding
+    if (!arguments.length) return this.options.tickPadding
+    this.options.tickPadding = padding
     return this
   }
 
@@ -89,8 +95,13 @@ class Axis {
     return this
   }
 
+  setChartWidth (width) {
+    this._chartWidth = width
+    return this.range([0, width - this.options.offset.left - this.options.offset.right - 1])
+  }
+
   getChartHeight () {
-    return this.chartHeight
+    return this.options.offset.top
   }
 
   /**
@@ -110,25 +121,27 @@ class Axis {
       })
   }
 
+  setOptions (data) {
+    this.options.treeData = data
+    this._transformData()
+    this.render()
+  }
+
   render () {
     const [min, max] = this._scaleFn.domain()
 
     const axis = this._posFn()
       .scale(this._scaleFn)
       // 不使用ticks而使用tickValues指定刻度
-      .tickValues([...d3.range(min, max, (max - min) / this._tickCount), max].map((i) => parseInt(i, 10)))
-      .tickSize(this._tickSize)
-      .tickPadding(this._tickPadding)
+      .tickValues([...d3.range(min, max, (max - min) / this.options.tickCount), max].map((i) => parseInt(i, 10)))
+      .tickSize(this.options.tickSize)
+      .tickPadding(this.options.tickPadding)
       .tickFormat(this._format)
 
     this._axisContainer
       .call(axis)
 
     this._adjustLastTextPosition()
-  }
-
-  destory () {
-    return this
   }
 }
 

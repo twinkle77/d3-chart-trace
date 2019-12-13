@@ -16,26 +16,26 @@ class Graph {
   }
 
   _init () {
-    /**
-     * 插入画布
-     */
-    const svg = view.createSvg(this._target)
-    this._svg = svg
-
+    this._insertSvg()
     this._initGraph()
     this._bindEvent()
+  }
+
+  _insertSvg () {
+    const svg = view.createSvg(this._target)
+    this._svg = svg
   }
 
   // 数据驱动改动点 4
   _initGraph () {
     const [minStartTime, maxEndTime] = this.options.timeRange
-    /**
-     * 初始化axis图
-     */
-    this._axis = new Axis(this._svg, this.options.axis)
+
+    this._axis = new Axis(this._svg, extend({
+      treeData: this.options.treeData,
+    }, this.options.axis))
+
     this._axis
       .tickSize(3)
-      .domain([minStartTime, maxEndTime])
       .tickFormat((d) => `${d}ms`)
 
     /**
@@ -56,33 +56,39 @@ class Graph {
     }, this.options.brush))
   }
 
+  setOptions (data) {
+    this._treeData = data
+    this._axis.setOptions(data)
+  }
+
   render () {
     /**
      * 以target节点的宽度做为svg的宽度
      */
-    const SVG_WIDTH = getElementRect(this._target.node()).width
+    const svgWidth = getElementRect(this._target.node()).width
 
     this._axis
-      .range(SVG_WIDTH)
+      .setChartWidth(svgWidth)
       .render()
-    const AXIS_HEIGHT = this._axis.getChartHeight()
+    const axisHeight = this._axis.getChartHeight()
 
     this._bar
-      .setChartWidth(SVG_WIDTH)
+      .setChartWidth(svgWidth)
       .render()
-    const BAR_TOTOL_HEIGHT = this._bar.getChartHeight()
+    const barHeight = this._bar.getChartHeight()
 
     this._brush
       .setBrushView({
-        brushWidth: SVG_WIDTH,
-        brushHeight: BAR_TOTOL_HEIGHT,
+        brushWidth: svgWidth,
+        brushHeight: barHeight,
       })
       .render()
 
     /** axis图 和 graph图 渲染完成后再设置svg的长度 */
+    const svgHeight = axisHeight + barHeight
     this._svg
-      .attr('width', SVG_WIDTH)
-      .attr('height', AXIS_HEIGHT + BAR_TOTOL_HEIGHT)
+      .attr('width', svgWidth)
+      .attr('height', svgHeight)
   }
 
   _bindEvent () {

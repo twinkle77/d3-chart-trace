@@ -92,6 +92,7 @@ class Trace {
 
     this._genData()
     this._table.setOptions(this._treeData)
+    this._graph.setOptions(this._treeData)
   }
 
   destory () {
