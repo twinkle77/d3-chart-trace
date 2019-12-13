@@ -125,7 +125,7 @@ button.addEventListener('click', () => {
     ...[Math.floor(Math.random() * dataLength), Math.floor(Math.random() * dataLength)].sort((a, b) => a - b),
   )
   console.log('newData:', data)
-  instance.setOptions(data)
+  instance.setOptions(data.slice(0, 1))
 }, false)
 
 export default Trace

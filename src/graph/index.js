@@ -46,16 +46,33 @@ class Graph {
     }, this.options.brush))
   }
 
+  _bindEvent () {
+    d3
+      .select(window)
+      .on('resize.graph', () => {
+        this.render()
+      })
+  }
+
   setOptions (data) {
     this.options.treeData = data
     this._axis.setOptions(data)
     this._bar.setOptions(data)
+
+    this._brush.clearBrush()
+    this._brush
+      .setBrushView({
+        brushWidth: this._svg.width,
+        brushHeight: this._bar.getChartHeight(),
+      })
+
+    console.log(this._bar.getChartHeight())
+
+    this._svg
+      .attr('height', this._bar.getChartHeight() + this._axis.getChartHeight())
   }
 
   render () {
-    /**
-     * 以target节点的宽度做为svg的宽度
-     */
     const svgWidth = getElementRect(this._target.node()).width
 
     this._axis
@@ -77,16 +94,8 @@ class Graph {
 
     const svgHeight = axisHeight + barHeight
     this._svg
-      .attr('width', svgWidth)
-      .attr('height', svgHeight)
-  }
-
-  _bindEvent () {
-    d3
-      .select(window)
-      .on('resize.graph', () => {
-        this.render()
-      })
+      .attr('width', this._svg.width = svgWidth)
+      .attr('height', this._svg.height = svgHeight)
   }
 
   destory () {

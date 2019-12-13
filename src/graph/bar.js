@@ -44,7 +44,7 @@ export default class Bar {
 
   /** 计算y轴的比例尺 */
   _computeYscale () {
-    this._yScale = d3.scaleLinear().domain([0, this.descendants.length - 1]).range([this.singleHeight, this.chartHeight])
+    this._yScale = d3.scaleLinear().domain([0, this.descendants.length]).range([0, this.chartHeight])
     return this
   }
 
@@ -79,9 +79,9 @@ export default class Bar {
       .classed(lineClassName, true)
       .merge(lineEls)
       .attr('x1', 0)
-      .attr('y1', (_, index) => this._yScale(index))
+      .attr('y1', (_, index) => this._yScale(index) + this.singleHeight)
       .attr('x2', this.chartWidth)
-      .attr('y2', (_, index) => this._yScale(index))
+      .attr('y2', (_, index) => this._yScale(index) + this.singleHeight)
 
     lineEls
       .exit()
@@ -94,7 +94,7 @@ export default class Bar {
    * 矩形绘制
    */
   _drawRects () {
-    const { barHeight } = this.options
+    const { barHeight, margin } = this.options
 
     const rectClassName = getClass('bar-rect')
 
@@ -108,7 +108,7 @@ export default class Bar {
       .classed(rectClassName, true)
       .merge(rectEls)
       .attr('x', (node) => this._xScale(node.data.startTime))
-      .attr('y', (_, index) => this._yScale(index - 1 + 0.5) - barHeight / 2)
+      .attr('y', (_, index) => this._yScale(index) + margin)
       .attr('width', (node) => this._xScale(node.data.endTime) - this._xScale(node.data.startTime))
       .attr('height', barHeight)
       .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.id)}`)

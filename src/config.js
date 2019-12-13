@@ -18,7 +18,7 @@ export default {
         left: 0,
       },
       barHeight: 5,
-      margin: 2,
+      margin: 4,
     },
     brush: {
       offset: {
