@@ -1,5 +1,5 @@
 
 export const warn = (msg) => {
   // eslint-disable-next-line no-console
-  console.error(`[d3-trace warn]：${msg}`)
+  console.error(`[d3-trace]：${msg}`)
 }

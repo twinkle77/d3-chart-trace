@@ -15,18 +15,16 @@ class Table {
 
     this._treeData = options.treeData || []
 
-    this.options.timeRange = computedTimeRange(this.options.treeData)
-
     this._init()
   }
 
   _init () {
+    this._genData()
+
     this._initTableHeader()
     this._initRightHeader()
 
     this._initTableBody()
-
-    this._genData()
 
     this._bindEvent()
   }
@@ -73,9 +71,15 @@ class Table {
     })
 
     this._allNodes = allNodes
+
+    this.options.timeRange = computedTimeRange(allNodes)
   }
 
   renderTableRow (domain) {
+    this._tableBody
+      .selectAll(`.${getClass('table-row')}`)
+      .remove()
+
     const rowEls = this._tableBody
       .selectAll(`.${getClass('table-row')}`)
       .data(this._allNodes)
@@ -86,24 +90,16 @@ class Table {
       .append('div')
       .classed(getClass('table-row'), true)
       .attr('style', `height: ${this.options.rowHeight}px`)
-      .call(this._createColumns().bind(this))
-
-    // update集合
-    const rectTool = this._layupRect(domain)
-    rowEls
-      .selectAll(`.${getClass('table-right-col')}`)
-      .selectAll('rect')
-      .call(rectTool)
+      .call(this._createColumns(domain).bind(this))
 
     // exit集合
     rowEls
       .exit()
-      .transition()
       .remove()
   }
 
-  _createColumns () {
-    const rectTool = this._layupRect()
+  _createColumns (domain) {
+    const rectTool = this._layupRect(domain)
 
     return function call (selection) {
       selection
@@ -165,7 +161,7 @@ class Table {
   setOptions (data) {
     this._treeData = data
     this._genData()
-    this.renderTableRow()
+    this.render()
   }
 
   renderHeaderAxis (domain) {

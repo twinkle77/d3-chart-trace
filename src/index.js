@@ -3,7 +3,7 @@ import extend from 'extend'
 import d from './data'
 import view from './view/index'
 import { query } from './util/element'
-import { isFunction, nextTick } from './util/tool'
+import { isFunction, nextTick, isArray } from './util/tool'
 import Graph from './graph/index'
 import Table from './table/index'
 import d3 from './d3'
@@ -11,8 +11,8 @@ import { warn } from './util/debug'
 
 class Trace {
   constructor (target = 'target', options = {}) {
-    if (!options.data) {
-      return warn('data对象必传！')
+    if (isArray(options.data) && options.data.length === 0) {
+      return warn('数据格式不符合！')
     }
 
     this.options = extend(true, {}, options)
@@ -82,10 +82,21 @@ class Trace {
     ]
   }
 
+  // eslint-disable-next-line consistent-return
   setOptions (newData) {
+    if (isArray(newData) && newData.length === 0) {
+      return warn('数据格式不符合！')
+    }
+
     this.options.data = extend(true, [], newData)
+
     this._genData()
     this._table.setOptions(this._treeData)
+  }
+
+  destory () {
+    this._table && this._table.destory()
+    this._graph && this._graph.destory()
   }
 
   render () {
