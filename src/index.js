@@ -3,7 +3,7 @@ import extend from 'extend'
 import d from './data'
 import view from './view/index'
 import { query } from './util/element'
-import { isFunction } from './util/tool'
+import { isFunction, nextTick } from './util/tool'
 import Graph from './graph/index'
 import Table from './table/index'
 import d3 from './d3'
@@ -88,9 +88,8 @@ class Trace {
     this._table.setOptions(this._treeData)
   }
 
-  // 数据驱动改动点 1
   render () {
-    setTimeout(() => {
+    nextTick(() => {
       this._table.render()
       this._graph.render()
     })

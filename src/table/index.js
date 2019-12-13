@@ -1,6 +1,7 @@
 import extend from 'extend'
 import view from '../view/index'
 import { getElementRect, getClass } from '../util/element'
+import { computedTimeRange } from '../util/tool'
 import d3 from '../d3'
 import Axis from '../graph/axis'
 import config from '../config'
@@ -14,7 +15,7 @@ class Table {
 
     this._treeData = options.treeData || []
 
-    this.options.timeRange = this._computedTimeRange()
+    this.options.timeRange = computedTimeRange(this.options.treeData)
 
     this._init()
   }
@@ -151,17 +152,6 @@ class Table {
         .attr('height', that.options.rectHeight)
         .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.id)}`)
     }
-  }
-
-  _computedTimeRange () {
-    const descendants = []
-    this._treeData.forEach((rootNode) => {
-      descendants.push(...rootNode.descendants())
-    })
-    return [
-      d3.min(descendants, (node) => node.data.startTime),
-      d3.max(descendants, (node) => node.data.endTime),
-    ]
   }
 
   _bindEvent () {
