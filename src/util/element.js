@@ -47,3 +47,17 @@ export function getViewportInfo () {
     height: document.documentElement.clientHeight,
   }
 }
+
+export function insertAfter (newElement, targetElement) {
+  const { parentNode } = targetElement
+  if (parentNode.lastChild === targetElement) {
+    parentNode.appendChild(newElement)
+  } else {
+    parentNode.insertBefore(newElement, targetElement.nextSibling)
+  }
+  return newElement
+}
+
+export function createElement (tagName) {
+  return document.createElement(tagName)
+}

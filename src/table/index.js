@@ -1,6 +1,6 @@
 import extend from 'extend'
 import view from '../view/index'
-import { getElementRect, getClass } from '../util/element'
+import { getElementRect, getClass, insertAfter } from '../util/element'
 import { computedTimeRange } from '../util/tool'
 import d3 from '../d3'
 import Axis from '../graph/axis'
@@ -121,6 +121,14 @@ class Table {
         .attr('height', this.options.rowHeight)
         .append('rect')
         .call(rectTool)
+
+      selection
+        .each(function iterator () {
+          const { id } = d3.select(this).datum().data
+          d3
+            .select(insertAfter(document.createElement('div'), this))
+            .text(id)
+        })
 
       return selection
     }
