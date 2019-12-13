@@ -1,17 +1,13 @@
 import extend from 'extend'
 import d3 from '../d3'
 import { getClass } from '../util/element'
-import { warn } from '../util/debug'
 import config from '../config'
 import colorGenerator from '../util/colorGenerator'
+import { computedTimeRange } from '../util/tool'
 
 export default class Bar {
   constructor (target, options = {}) {
     this._target = target
-
-    if (!options.timeRange) {
-      return warn('timeRange必传')
-    }
 
     this.options = extend(true, {}, config.graph.bar, options)
 
@@ -19,33 +15,44 @@ export default class Bar {
   }
 
   _init () {
-    this._initScale()
     this._insertContainer()
+    this._transformData()
   }
 
-  // 数据驱动改动点 5
-  _initScale () {
-    const {
-      barHeight,
-      margin,
-      treeData = [],
-    } = this.options
-
+  _transformData () {
     this.descendants = []
-    treeData.forEach((root) => {
+    this.options.treeData.forEach((root) => {
       root.eachBefore((node) => {
         this.descendants.push(node)
       })
     })
+    this.options.timeRange = computedTimeRange(this.descendants)
 
-    // 当条bar的高度
-    const singleHeight = barHeight + margin * 2
-
+    const {
+      barHeight,
+      margin,
+    } = this.options
+    // 当条的高度
+    this.singleHeight = barHeight + margin * 2
     // 图的总高
-    const chartHeight = singleHeight * this.descendants.length
-    this.chartHeight = chartHeight
+    this.chartHeight = this.singleHeight * this.descendants.length
 
-    this._yScale = d3.scaleLinear().domain([0, this.descendants.length - 1]).range([singleHeight, chartHeight])
+    return this
+      ._computeYscale()
+      ._computeXscale()
+  }
+
+  /** 计算y轴的比例尺 */
+  _computeYscale () {
+    this._yScale = d3.scaleLinear().domain([0, this.descendants.length - 1]).range([this.singleHeight, this.chartHeight])
+    return this
+  }
+
+  /** 计算x轴的比例尺 */
+  _computeXscale () {
+    const [minStartTime, maxEndTime] = this.options.timeRange
+    this._xScale = d3.scaleLinear().domain([minStartTime, maxEndTime]).range([0, this.chartWidth])
+    return this
   }
 
   _insertContainer () {
@@ -60,10 +67,6 @@ export default class Bar {
    * 线条绘制
    */
   _drawLines () {
-    if (!this.chartWidth) {
-      return warn('需先设置图宽度')
-    }
-
     const lineClassName = getClass('bar-line')
 
     const lineEls = this._barContainer
@@ -117,20 +120,19 @@ export default class Bar {
     return this
   }
 
-  /** 计算x轴的比例尺 */
-  _computeXscale () {
-    const [minStartTime, maxEndTime] = this.options.timeRange
-    this._xScale = d3.scaleLinear().domain([minStartTime, maxEndTime]).range([0, this.chartWidth])
-  }
-
   getChartHeight () {
     return this.chartHeight
   }
 
   setChartWidth (chartWidth) {
     this.chartWidth = chartWidth
-    this._computeXscale()
-    return this
+    return this._computeXscale()
+  }
+
+  setOptions (data) {
+    this.options.treeData = data
+    this._transformData()
+    this.render()
   }
 
   render () {
@@ -138,24 +140,4 @@ export default class Bar {
       ._drawLines()
       ._drawRects()
   }
-
-  /*
-  _drawText () {
-    this.miniG.append('g')
-      .selectAll('.ctext')
-      .data(data)
-      .enter()
-      .append('text')
-      .classed('ctext', true)
-      .text((d) => d.label)
-      .attr('x', -10)
-      .attr('y', (d, index) => yScale(index + 1 + 0.5))
-      .attr('dy', '0.5ex')
-      .attr('text-anchor', 'start')
-      .attr('style', 'font-size: 12px;')
-      .each(function computeWidth (n) {
-        n.textWidth = this.getComputedTextLength()
-      })
-  }
-  */
 }

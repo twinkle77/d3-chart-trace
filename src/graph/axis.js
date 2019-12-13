@@ -43,7 +43,6 @@ class Axis {
         allNodes.push(node)
       })
     })
-    this._allNodes = allNodes
     this.domain(computedTimeRange(allNodes))
   }
 

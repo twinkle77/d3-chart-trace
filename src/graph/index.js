@@ -26,10 +26,7 @@ class Graph {
     this._svg = svg
   }
 
-  // 数据驱动改动点 4
   _initGraph () {
-    const [minStartTime, maxEndTime] = this.options.timeRange
-
     this._axis = new Axis(this._svg, extend({
       treeData: this.options.treeData,
     }, this.options.axis))
@@ -38,18 +35,11 @@ class Graph {
       .tickSize(3)
       .tickFormat((d) => `${d}ms`)
 
-    /**
-     * 初始化bar图
-     */
     this._bar = new Bar(this._svg,
       extend({
         treeData: this.options.treeData,
-        timeRange: [minStartTime, maxEndTime],
       }, this.options.bar))
 
-    /**
-     * 初始化刷子
-     */
     this._brush = new Brush(this._svg, extend({
       brushEnd: this.options.brushEnd,
       xScale: this._axis.scale(),
@@ -57,8 +47,9 @@ class Graph {
   }
 
   setOptions (data) {
-    this._treeData = data
+    this.options.treeData = data
     this._axis.setOptions(data)
+    this._bar.setOptions(data)
   }
 
   render () {
@@ -84,7 +75,6 @@ class Graph {
       })
       .render()
 
-    /** axis图 和 graph图 渲染完成后再设置svg的长度 */
     const svgHeight = axisHeight + barHeight
     this._svg
       .attr('width', svgWidth)
