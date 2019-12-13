@@ -74,7 +74,7 @@ class Table {
     this._allNodes = allNodes
   }
 
-  renderTableRow () {
+  renderTableRow (domain) {
     const rowEls = this._tableBody
       .selectAll(`.${getClass('table-row')}`)
       .data(this._allNodes)
@@ -88,7 +88,7 @@ class Table {
       .call(this._createColumns().bind(this))
 
     // update集合
-    const rectTool = this._layupRect()
+    const rectTool = this._layupRect(domain)
     rowEls
       .selectAll(`.${getClass('table-right-col')}`)
       .selectAll('rect')
@@ -190,7 +190,7 @@ class Table {
   }
 
   render (domain) {
-    this.renderTableRow()
+    this.renderTableRow(domain)
     this.renderHeaderAxis(domain)
   }
 

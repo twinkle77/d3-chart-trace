@@ -66,21 +66,7 @@ class Trace {
    * @param {Array} domain 刷子所选的比例尺范围
    */
   _brushEndHandler (selection, domain) {
-    console.table({
-      selection,
-      domain,
-    })
-    if (selection && domain && this._table) {
-      // 重渲染rect
-      // this._table.resetRectWidth(domain, selection)
-      // this._table.renderHeaderAxis(domain)
-      this._table.render(domain)
-    } else {
-      // 重置
-      // this._table.resetRectWidth()
-      // this._table.renderHeaderAxis()
-      this._table.render()
-    }
+    this._table && this._table.render(domain)
 
     isFunction(this.options.brushEnd) && this.options.brushEnd(selection, domain)
   }
