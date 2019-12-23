@@ -11,22 +11,24 @@
   // table start
   .d3-trace-table {
     width: 100%;
+    border: 1px solid #ccc;
     .d3-trace-table-header {
-      border: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
       .d3-trace-table-left-col {
         border-right:  1px solid #ccc;
       }
     }
     .d3-trace-table-body {
       .d3-trace-table-row {
-        border-left: 1px solid #ccc;
-        border-right: 1px solid #ccc;
+        box-sizing: border-box;
         .d3-trace-table-left-col {
           border-right: 1px solid #ccc;
         }
       }
-      .d3-trace-table-row:last-child {
-        border-bottom: 1px solid #ccc;
+      .d3-trace-table-row.trace-hover {
+        outline: 1px solid #ddd;
+        background-color: #f8f8f8;
+        cursor: pointer;
       }
     }
 

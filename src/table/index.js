@@ -92,10 +92,18 @@ class Table {
       .classed(getClass('table-row'), true)
       .attr('style', `height: ${this.options.rowHeight}px`)
       .call(this._createColumns(domain).bind(this))
+      .on('mouseenter.hover', function enterHandler () {
+        d3.select(this).classed('trace-hover', true)
+      })
+      .on('mouseleave.hover', function leaveHandler () {
+        d3.select(this).classed('trace-hover', false)
+      })
 
     // exit集合
     rowEls
       .exit()
+      .on('mouseenter.hover', null)
+      .on('mouseleave.hover', null)
       .remove()
   }
 
@@ -122,13 +130,13 @@ class Table {
         .append('rect')
         .call(rectTool)
 
-      selection
-        .each(function iterator () {
-          const { id } = d3.select(this).datum().data
-          d3
-            .select(insertAfter(document.createElement('div'), this))
-            .text(id)
-        })
+      // selection
+      //   .each(function iterator () {
+      //     const { id } = d3.select(this).datum().data
+      //     d3
+      //       .select(insertAfter(document.createElement('div'), this))
+      //       .text(id)
+      //   })
 
       return selection
     }
