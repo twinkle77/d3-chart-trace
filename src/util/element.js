@@ -61,3 +61,23 @@ export function insertAfter (newElement, targetElement) {
 export function createElement (tagName) {
   return document.createElement(tagName)
 }
+
+export function removeClass (el, className) {
+  el.classList.remove(className)
+}
+
+export function addClass (el, className) {
+  return el.classList.add(className)
+}
+
+export function hasClass (el, className) {
+  return el.classList.contains(className)
+}
+
+export function toggleClass (el, className) {
+  return el.classList.toggle(className)
+}
+
+export function removeElement (el) {
+  el && el.parentNode && el.parentNode.removeChild(el)
+}

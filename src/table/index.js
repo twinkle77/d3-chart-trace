@@ -6,6 +6,7 @@ import d3 from '../d3'
 import Axis from '../graph/axis'
 import config from '../config'
 import colorGenerator from '../util/colorGenerator'
+import Card from './card.js'
 
 class Table {
   constructor (target, options = {}) {
@@ -81,6 +82,10 @@ class Table {
       .selectAll(`.${getClass('table-row')}`)
       .remove()
 
+    this._tableBody
+      .selectAll(`.${getClass('card-wrapper')}`)
+      .remove()
+
     const rowEls = this._tableBody
       .selectAll(`.${getClass('table-row')}`)
       .data(this._allNodes)
@@ -92,18 +97,20 @@ class Table {
       .classed(getClass('table-row'), true)
       .attr('style', `height: ${this.options.rowHeight}px`)
       .call(this._createColumns(domain).bind(this))
-      .on('mouseenter.hover', function enterHandler () {
-        d3.select(this).classed('trace-hover', true)
-      })
-      .on('mouseleave.hover', function leaveHandler () {
-        d3.select(this).classed('trace-hover', false)
+      .on('click.toggle', function toggleHandler () {
+        if (this.isExpanded) {
+          this.cardInstance.destory()
+          d3.select(this).classed('trace-expanded', this.isExpanded = false)
+        } else {
+          this.cardInstance = new Card()
+          insertAfter(this.cardInstance.fragment, this)
+          d3.select(this).classed('trace-expanded', this.isExpanded = true)
+        }
       })
 
     // exit集合
     rowEls
       .exit()
-      .on('mouseenter.hover', null)
-      .on('mouseleave.hover', null)
       .remove()
   }
 
@@ -129,14 +136,6 @@ class Table {
         .attr('height', this.options.rowHeight)
         .append('rect')
         .call(rectTool)
-
-      // selection
-      //   .each(function iterator () {
-      //     const { id } = d3.select(this).datum().data
-      //     d3
-      //       .select(insertAfter(document.createElement('div'), this))
-      //       .text(id)
-      //   })
 
       return selection
     }
