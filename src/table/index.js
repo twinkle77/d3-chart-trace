@@ -162,7 +162,7 @@ class Table {
         .attr('y', that.options.rowHeight / 2 - that.options.rectHeight / 2)
         .attr('width', (node) => (`${xScale(node.data.endTime) - xScale(node.data.startTime)}`))
         .attr('height', that.options.rectHeight)
-        .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.id)}`)
+        .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.spanID)}`)
     }
   }
 

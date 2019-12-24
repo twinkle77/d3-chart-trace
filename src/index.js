@@ -1,6 +1,5 @@
 import './assets/style.less'
 import extend from 'extend'
-import d from './data'
 import view from './view/index'
 import { query } from './util/element'
 import { isFunction, nextTick, isArray } from './util/tool'
@@ -8,6 +7,42 @@ import Graph from './graph/index'
 import Table from './table/index'
 import d3 from './d3'
 import { warn } from './util/debug'
+import traceData from './trace'
+
+const { spans } = traceData.result
+
+let rootNode = null
+let minStartTime = spans[0].startTime
+
+for (let i = 0; i < spans.length; i += 1) {
+  const span = spans[i]
+
+  minStartTime = Math.min(span.startTime, minStartTime)
+
+  // 父节点
+  if (!rootNode && span.traceID === span.spanID) {
+    rootNode = span
+  }
+
+  for (let j = 0; j < span.references.length; j += 1) {
+    const { spanID } = span.references[j]
+    const targetSpan = spans.find((item) => item.spanID === spanID)
+    if (!targetSpan.children) {
+      targetSpan.children = []
+    }
+    targetSpan.children.push(span)
+  }
+}
+
+for (let i = 0; i < spans.length; i += 1) {
+  const span = spans[i]
+  span.startTime -= minStartTime
+  span.startTime /= 1000
+  span.endTime = span.startTime + span.duration
+}
+
+console.log('rootNode', rootNode)
+
 
 class Trace {
   constructor (target = 'target', options = {}) {
@@ -96,22 +131,22 @@ class Trace {
 
 const instance = new Trace(document.body, {
   brushEnd () {},
-  data: d,
+  data: [rootNode],
 })
 instance.render()
 
-const button = document.createElement('button')
-button.innerHTML = 'tiggle'
-document.body.appendChild(button)
+// const button = document.createElement('button')
+// button.innerHTML = 'tiggle'
+// document.body.appendChild(button)
 
-const dataLength = d.length
+// const dataLength = d.length
 
-button.addEventListener('click', () => {
-  const data = d.slice(
-    ...[Math.floor(Math.random() * dataLength), Math.floor(Math.random() * dataLength)].sort((a, b) => a - b),
-  )
-  console.log('newData:', data)
-  instance.setOptions(data.slice(0, 1))
-}, false)
+// button.addEventListener('click', () => {
+//   const data = d.slice(
+//     ...[Math.floor(Math.random() * dataLength), Math.floor(Math.random() * dataLength)].sort((a, b) => a - b),
+//   )
+//   console.log('newData:', data)
+//   instance.setOptions(data.slice(0, 1))
+// }, false)
 
 export default Trace
