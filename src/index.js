@@ -8,6 +8,7 @@ import Table from './table/index'
 import d3 from './d3'
 import { warn } from './util/debug'
 import traceData from './trace'
+import EventBus from './eventBus'
 
 const { spans } = traceData.result
 
@@ -41,8 +42,7 @@ for (let i = 0; i < spans.length; i += 1) {
   span.endTime = span.startTime + span.duration
 }
 
-console.log('rootNode', rootNode)
-
+let i = 0
 
 class Trace {
   constructor (target = 'target', options = {}) {
@@ -57,6 +57,9 @@ class Trace {
 
   _init (target) {
     this._insertLayout(query(target))
+
+    this.eventBus = new EventBus(this._mainWrapper, i += 1)
+
     this._genData()
     this._initChart()
   }
@@ -71,14 +74,18 @@ class Trace {
   }
 
   _initChart () {
-    this._table = new Table(this._tableWrapper, extend({
+    this._table = new Table(this._tableWrapper, {
       treeData: this._treeData,
-    }, this.options.table))
+      eventBus: this.eventBus,
+      ...this.options.table,
+    })
 
-    this._graph = new Graph(this._graphWrapper, extend({
+    this._graph = new Graph(this._graphWrapper, {
       treeData: this._treeData,
       brushEnd: this._brushEndHandler.bind(this),
-    }, this.options.graph))
+      eventBus: this.eventBus,
+      ...this.options.graph,
+    })
   }
 
   _insertLayout (target) {
@@ -119,6 +126,8 @@ class Trace {
   destory () {
     this._table && this._table.destory()
     this._graph && this._graph.destory()
+    this.eventBus.off()
+    this.eventBus = null
   }
 
   render () {
