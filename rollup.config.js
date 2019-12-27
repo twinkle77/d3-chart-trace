@@ -6,7 +6,7 @@ import commonjs from 'rollup-plugin-commonjs'
 
 import replace from '@rollup/plugin-replace'
 import alias from '@rollup/plugin-alias'
-import buble from '@rollup/plugin-buble'
+import babel from 'rollup-plugin-babel'
 
 import less from 'rollup-plugin-less'
 
@@ -42,12 +42,11 @@ const plugins = [
       '@': root
     }
   }),
-  buble({
-    transforms: {
-      dangerousForOf: true,
-      generator: false
+  babel(
+    {
+      exclude: 'node_modules/**'
     }
-  })
+  )
 ]
 
 const config = [
