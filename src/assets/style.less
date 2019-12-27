@@ -28,14 +28,21 @@
 
   // table start
   .d3-trace-table {
+    box-sizing: border-box;
     width: 100%;
+    height: auto;
     border: 1px solid #ccc;
+
+    // table header
     .d3-trace-table-header {
       border-bottom: 1px solid #ccc;
       .d3-trace-table-left-col {
         border-right:  1px solid #ccc;
+        font-weight: 700;
       }
     }
+
+    // table body
     .d3-trace-table-body {
       .d3-trace-table-row {
         box-sizing: border-box;
@@ -55,16 +62,22 @@
       }
     }
 
+    // 公用row样式
     .d3-trace-table-row {
       display: flex;
       flex-direction: row;
       flex: 0 1 auto;
       color:rgba(0,0,0,.65);
+      font-size: 12px;
       .d3-trace-table-left-col {
+        box-sizing: border-box;
+        height: 30px;
+        padding: 0 10px;
+        line-height: 30px;
         flex-basis: 25%;
         max-width: 25%;
         white-space: nowrap;
-        overflow: hidden;
+        // overflow: hidden;
       }
       .d3-trace-table-right-col {
         flex-basis: 75%;
@@ -75,7 +88,9 @@
       }
     }
 
+    // table card
     .d3-trace-card-wrapper {
+      width: 100%;
       box-sizing: border-box;
       display: flex;
       flex-direction: row;
@@ -84,7 +99,7 @@
         box-sizing: border-box;
         flex-basis: 25%;
         max-width: 25%;
-        border-bottom: 1px solid #ccc;
+        box-shadow: 0 2px 3px #ccc;
       }
       .d3-trace-card-body {
         box-sizing: border-box;

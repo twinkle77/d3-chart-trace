@@ -1,12 +1,12 @@
 import extend from 'extend'
 import view from '../view/index'
 import { getElementRect, getClass, insertAfter } from '../util/element'
-import { computedTimeRange } from '../util/tool'
+import { computedTimeRange, isFunction } from '../util/tool'
 import d3 from '../d3'
 import Axis from '../graph/axis'
 import config from '../config'
 import colorGenerator from '../util/colorGenerator'
-import Card from './card.js'
+import Card from './card'
 
 class Table {
   constructor (target, options = {}) {
@@ -35,7 +35,12 @@ class Table {
     tableHeader
       .attr('style', `height: ${this.options.rowHeight}px`)
     const { leftCol, rightCol } = view.createTableRow(tableHeader)
-    leftCol.text('header-left-col')
+
+    if (isFunction(this.options.renerTableHeader)) {
+      this.options.renerTableHeader(leftCol)
+    } else {
+      leftCol.text('Service')
+    }
 
     this._rightCol = rightCol
   }
@@ -122,10 +127,10 @@ class Table {
         .append('div')
         .classed(getClass('table-left-col'), true)
         .classed(getClass('table-col'), true)
-        .attr('style', (node) => `padding-left: ${this.options.paddingLeft * node.depth}%`)
         .append('span')
+        .attr('style', (node) => `padding-left: ${this.options.paddingLeft * node.depth}%`)
         .classed(getClass('text'), true)
-        .text((node) => node.data.label)
+        .text((node) => node.data.operationName)
 
       selection
         .append('div')

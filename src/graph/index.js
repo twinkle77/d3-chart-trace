@@ -66,8 +66,6 @@ class Graph {
         brushHeight: this._bar.getChartHeight(),
       })
 
-    console.log(this._bar.getChartHeight())
-
     this._svg
       .attr('height', this._bar.getChartHeight() + this._axis.getChartHeight())
   }
