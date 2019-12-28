@@ -4,14 +4,8 @@ import { getClass } from '../util/element'
 import config from '../config'
 import { computedTimeRange } from '../util/tool'
 
-/**
- * 坐标轴的朝向
- */
 const POSITION = {
   TOP: d3.axisTop,
-  RIGHT: d3.axisRight,
-  BOTTOM: d3.axisBottom,
-  LEFT: d3.axisLeft,
 }
 
 class Axis {

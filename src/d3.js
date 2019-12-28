@@ -7,9 +7,6 @@ import {
 import { brushX } from 'd3-brush'
 import {
   axisTop,
-  axisRight,
-  axisBottom,
-  axisLeft,
 } from 'd3-axis'
 import { hierarchy } from 'd3-hierarchy'
 
@@ -22,9 +19,6 @@ export default {
   min,
   brushX,
   axisTop,
-  axisRight,
-  axisBottom,
-  axisLeft,
   hierarchy,
   range,
 }
