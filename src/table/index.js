@@ -119,7 +119,8 @@ class Table {
         /**
          * card的展开可能会导致滚动条的出现，需要出发graph图的重新计算
          */
-        that.options.eventBus.emit('RENDER')
+        that.options.eventBus.emit('GRAPH_RENDER')
+        that.options.eventBus.emit('TABLE_AXIS_RENDER')
       })
 
     // exit集合
@@ -186,6 +187,10 @@ class Table {
       .on('resize.table', () => {
         this.render()
       })
+
+    this.options.eventBus.on('TABLE_AXIS_RENDER', () => {
+      this.renderHeaderAxis(this._headerAxis.domain())
+    })
   }
 
   setOptions (data) {

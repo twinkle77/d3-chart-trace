@@ -43,10 +43,6 @@ export default class Brush {
   }
 
   setBrushView ({ brushWidth, brushHeight }) {
-    console.log({
-      brushWidth,
-      brushHeight,
-    })
     this._brushInstance
       .extent([[0, 0], [brushWidth, brushHeight]])
     return this

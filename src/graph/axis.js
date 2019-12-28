@@ -40,9 +40,9 @@ class Axis {
     this.domain(computedTimeRange(allNodes))
   }
 
-  domain ([min, max]) {
-    if (!arguments.length) return this._scaleFn.domain()
-    this._scaleFn.domain([min, max])
+  domain (range) {
+    if (!range) return this._scaleFn.domain()
+    this._scaleFn.domain(range)
     return this
   }
 
