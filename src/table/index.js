@@ -12,9 +12,9 @@ class Table {
   constructor (target, options = {}) {
     this._target = target
 
-    this.options = extend(true, {}, config.table, options)
+    this.options = options
 
-    this._treeData = options.treeData || []
+    this.options.table = extend(true, {}, config.table, options.table)
 
     this._init()
   }
@@ -31,9 +31,11 @@ class Table {
   }
 
   _initTableHeader () {
+    const { rowHeight } = this.options.table
+
     const tableHeader = view.createTableHeader(this._target)
     tableHeader
-      .attr('style', `height: ${this.options.rowHeight}px`)
+      .attr('style', `height: ${rowHeight}px`)
     const { leftCol, rightCol } = view.createTableRow(tableHeader)
 
     if (isFunction(this.options.renerTableHeader)) {
@@ -71,7 +73,7 @@ class Table {
   _transformData () {
     const allNodes = []
 
-    this._treeData.forEach((root) => {
+    this.options.treeData.forEach((root) => {
       root.eachBefore((node) => {
         allNodes.push(node)
       })
@@ -95,12 +97,15 @@ class Table {
       .selectAll(`.${getClass('table-row')}`)
       .data(this._allNodes)
 
+    const { rowHeight } = this.options.table
+    const that = this
+
     // enter集合
     rowEls
       .enter()
       .append('div')
       .classed(getClass('table-row'), true)
-      .attr('style', `height: ${this.options.rowHeight}px`)
+      .attr('style', `height: ${rowHeight}px`)
       .call(this._createColumns(domain).bind(this))
       .on('click.toggle', function toggleHandler () {
         if (this.isExpanded) {
@@ -111,6 +116,10 @@ class Table {
           insertAfter(this.cardInstance.fragment, this)
           d3.select(this).classed('trace-expanded', this.isExpanded = true)
         }
+        /**
+         * card的展开可能会导致滚动条的出现，需要出发graph图的重新计算
+         */
+        that.options.eventBus.emit('RENDER')
       })
 
     // exit集合
@@ -121,6 +130,7 @@ class Table {
 
   _createColumns (domain) {
     const rectTool = this._layupRect(domain)
+    const { rowHeight, paddingLeft } = this.options.table
 
     return function call (selection) {
       selection
@@ -128,7 +138,7 @@ class Table {
         .classed(getClass('table-left-col'), true)
         .classed(getClass('table-col'), true)
         .append('span')
-        .attr('style', (node) => `padding-left: ${this.options.paddingLeft * node.depth}%`)
+        .attr('style', (node) => `padding-left: ${paddingLeft * node.depth}%`)
         .classed(getClass('text'), true)
         .text((node) => node.data.operationName)
 
@@ -138,7 +148,7 @@ class Table {
         .classed(getClass('table-col'), true)
         .append('svg')
         .attr('width', '100%')
-        .attr('height', this.options.rowHeight)
+        .attr('height', rowHeight)
         .append('rect')
         .call(rectTool)
 
@@ -151,6 +161,7 @@ class Table {
    */
   _layupRect (domain) {
     const [minStartTime, maxEndTime] = this.options.timeRange
+    const { rowHeight, rectHeight } = this.options.table
 
     const rowWidth = getElementRect(this._rightCol.node()).width
 
@@ -159,14 +170,12 @@ class Table {
       .domain(domain || [minStartTime, maxEndTime])
       .range([0, rowWidth])
 
-    const that = this
-
     return function draw (selection) {
       selection
         .attr('x', (node) => xScale(node.data.startTime))
-        .attr('y', that.options.rowHeight / 2 - that.options.rectHeight / 2)
+        .attr('y', rowHeight / 2 - rectHeight / 2)
         .attr('width', (node) => (`${xScale(node.data.endTime) - xScale(node.data.startTime)}`))
-        .attr('height', that.options.rectHeight)
+        .attr('height', rectHeight)
         .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.spanID)}`)
     }
   }
@@ -180,7 +189,7 @@ class Table {
   }
 
   setOptions (data) {
-    this._treeData = data
+    this.options.treeData = data
     this._transformData()
     this.render()
   }

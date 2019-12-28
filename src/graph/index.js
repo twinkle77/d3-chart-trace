@@ -52,6 +52,10 @@ class Graph {
       .on('resize.graph', () => {
         this.render()
       })
+
+    this.options.eventBus.on('RENDER', () => {
+      this.render()
+    })
   }
 
   setOptions (data) {

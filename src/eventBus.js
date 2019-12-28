@@ -1,9 +1,12 @@
 import d3 from './d3'
 
+let NAMESPACE_I = 0
 export default class EventBus {
-  constructor (mountElement, namespace) {
-    this.mountElement = d3.select(mountElement)
-    this.namespace = namespace
+  constructor () {
+    this.mountElement = d3.select(window)
+
+    this.namespace = NAMESPACE_I
+    NAMESPACE_I += 1
   }
 
   static create () {
@@ -11,7 +14,7 @@ export default class EventBus {
   }
 
   getEventName (event) {
-    return `${event}.${this.namespace}`
+    return `${event}-${this.namespace}`
   }
 
   on (event, fn) {

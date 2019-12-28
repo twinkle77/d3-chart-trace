@@ -42,8 +42,6 @@ for (let i = 0; i < spans.length; i += 1) {
   span.endTime = span.startTime + span.duration
 }
 
-let i = 0
-
 class Trace {
   constructor (target = 'target', options = {}) {
     if (!options.data || (isArray(options.data) && options.data.length === 0)) {
@@ -58,7 +56,7 @@ class Trace {
   _init (target) {
     this._insertLayout(query(target))
 
-    this.eventBus = new EventBus(this._mainWrapper, i += 1)
+    this.eventBus = new EventBus()
 
     this._genData()
     this._initChart()
@@ -77,7 +75,7 @@ class Trace {
     this._table = new Table(this._tableWrapper, {
       treeData: this._treeData,
       eventBus: this.eventBus,
-      ...this.options.table,
+      table: this.options.table,
     })
 
     this._graph = new Graph(this._graphWrapper, {
