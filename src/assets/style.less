@@ -1,3 +1,5 @@
+@import 'var.less';
+
 .d3-trace-wrapper {
   width: 100%;
   height: auto;
@@ -114,5 +116,60 @@
         box-shadow: 0 2px 3px rgba(45,140,240,.4);
       }
     }
+  }
+}
+
+.d3-trace-tooltip {
+  position: absolute;
+  box-sizing: border-box;
+  background: @tooltipColor;
+  color: #fff;
+  padding: 12px;
+  border-radius: 2px;
+  line-height: 1;
+  text-align: center;
+  // display: none;
+  opacity: 0;
+  box-shadow: -4px 5px 21px -6px rgba(0,0,0,1);
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+  }
+
+  &.top:after {
+    top: -@tooltipTriangleWidth;
+    left: 50%;
+    border-right: @tooltipTriangleWidth solid transparent ;
+    border-left: @tooltipTriangleWidth solid transparent;
+    border-bottom: @tooltipTriangleWidth solid @tooltipColor;
+    margin-left: -@tooltipTriangleWidth;
+  }
+
+  &.bottpm:after {
+    top: 100%;
+    left: 50%;
+    border-left: @tooltipTriangleWidth solid transparent ;
+    border-right: @tooltipTriangleWidth solid transparent;
+    border-top: @tooltipTriangleWidth solid @tooltipColor;
+    margin-left: -@tooltipTriangleWidth;
+  }
+
+  &.left:after {
+    top: 50%;
+    left: -@tooltipTriangleWidth;
+    border-bottom: @tooltipTriangleWidth solid transparent ;
+    border-top: @tooltipTriangleWidth solid transparent;
+    border-right: @tooltipTriangleWidth solid @tooltipColor;
+    margin-top: -@tooltipTriangleWidth;
+  }
+
+  &.right:after {
+    top: 50%;
+    right: -@tooltipTriangleWidth;
+    border-bottom: @tooltipTriangleWidth solid transparent ;
+    border-top: @tooltipTriangleWidth solid transparent;
+    border-left: @tooltipTriangleWidth solid @tooltipColor;
+    margin-top: -@tooltipTriangleWidth;
   }
 }

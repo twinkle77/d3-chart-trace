@@ -54,6 +54,7 @@
     "d3-scale": "^3.2.1",
     "d3-scale-chromatic": "^1.5.0",
     "d3-selection": "^1.4.1",
+    "document-offset": "^1.0.4",
     "extend": "^3.0.2"
   }
 }

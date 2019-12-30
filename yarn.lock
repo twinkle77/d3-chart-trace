@@ -1344,6 +1344,27 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
+document-offset@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npm.taobao.org/document-offset/download/document-offset-1.0.4.tgz#7345b819cdfef2bb45c63ce13056416063b70085"
+  integrity sha1-c0W4Gc3+8rtFxjzhMFZBYGO3AIU=
+  dependencies:
+    dom-support "*"
+    get-document "1.0.0"
+    within-element "0.1.0"
+
+dom-support@*:
+  version "0.0.2"
+  resolved "https://registry.npm.taobao.org/dom-support/download/dom-support-0.0.2.tgz#0e129764ffa5e203d8ab5839e2e92dc2ae14ef7c"
+  integrity sha1-DhKXZP+l4gPYq1g54uktwq4U73w=
+  dependencies:
+    domready "*"
+
+domready@*:
+  version "1.0.8"
+  resolved "https://registry.npm.taobao.org/domready/download/domready-1.0.8.tgz#91f252e597b65af77e745ae24dd0185d5e26d58c"
+  integrity sha1-kfJS5Ze2Wvd+dFriTdAYXV4m1Yw=
+
 duplexer@~0.1.1:
   version "0.1.1"
   resolved "https://registry.npm.taobao.org/duplexer/download/duplexer-0.1.1.tgz#ace6ff808c1ce66b57d1ebf97977acb02334cfc1"
@@ -1776,6 +1797,11 @@ gauge@~2.7.3:
     string-width "^1.0.1"
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
+
+get-document@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/get-document/download/get-document-1.0.0.tgz#4821bce66f1c24cb0331602be6cb6b12c4f01c4b"
+  integrity sha1-SCG85m8cJMsDMWAr5strEsTwHEs=
 
 get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
@@ -3704,6 +3730,11 @@ wide-align@^1.1.0:
   resolved "https://registry.npm.taobao.org/wide-align/download/wide-align-1.1.3.tgz#ae074e6bdc0c14a431e804e624549c633b000457"
   dependencies:
     string-width "^1.0.2 || 2"
+
+within-element@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npm.taobao.org/within-element/download/within-element-0.1.0.tgz#b610be314fb588bf21d7bd733906e437f30e2b95"
+  integrity sha1-thC+MU+1iL8h171zOQbkN/MOK5U=
 
 word-wrap@~1.2.3:
   version "1.2.3"

@@ -7,6 +7,7 @@ import Axis from '../graph/axis'
 import config from '../config'
 import colorGenerator from '../util/colorGenerator'
 import Card from './card'
+import Tooltip from './tooltip'
 
 class Table {
   constructor (target, options = {}) {
@@ -28,6 +29,8 @@ class Table {
     this._initTableBody()
 
     this._bindEvent()
+
+    this.tooltip = new Tooltip()
   }
 
   _initTableHeader () {
@@ -117,7 +120,7 @@ class Table {
           d3.select(this).classed('trace-expanded', this.isExpanded = true)
         }
         /**
-         * card的展开可能会导致滚动条的出现，需要出发graph图的重新计算
+         * card的展开可能会导致滚动条的出现，需要触发graph图的重新计算
          */
         that.options.eventBus.emit('GRAPH_RENDER')
         that.options.eventBus.emit('TABLE_AXIS_RENDER')
@@ -138,6 +141,24 @@ class Table {
         .append('div')
         .classed(getClass('table-left-col'), true)
         .classed(getClass('table-col'), true)
+        .on('mouseenter', ({ data: rawData }) => {
+          const {
+            operationName, startTime, duration, spanID,
+          } = rawData
+
+          const html = `
+            <p>spanID: ${spanID}</p>
+            <p>operationName: ${operationName}</p>
+            <p>startTime: ${startTime}ms</p>
+            <p>duration: ${duration}ms</p>
+          `
+
+          this.tooltip.html(html)
+          this.tooltip.show()
+        })
+        .on('mouseleave', () => {
+          this.tooltip.hide()
+        })
         .append('span')
         .attr('style', (node) => `padding-left: ${paddingLeft * node.depth}%`)
         .classed(getClass('text'), true)
