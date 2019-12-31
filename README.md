@@ -12,21 +12,76 @@
   </a>
 </p>
 
-> 用于描述请求之间的调用关系
+> 用于描述请求调用关系的图
 
 ### 🏠 [Homepage](https://github.com/twinkle77/d3-trace#readme)
 
 ## Install
 
 ```sh
-npm install
+yarn add d3-trace
 ```
 
-## Run tests
+## Usage
 
-```sh
-npm run test
+```javascript
+import Trace from 'd3-trace'
+const instance = new Trace(document.body, {
+  brushEnd () {},
+  data,
+})
+
+// render
+instance.render()
+
+// destory
+instance.destory()
+
+// update
+instance.setOptions(newData)
 ```
+
+Default configuration
+
+```javascript
+{
+  graph: {
+    axis: {
+      offset: {
+        top: 20,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      },
+      tickPadding: 3,
+      tickCount: 4,
+      tickSize: 5,
+      pos: 'TOP',
+    },
+    bar: {
+      offset: {
+        top: 20,
+        left: 0,
+      },
+      barHeight: 5,
+      margin: 4,
+    },
+    brush: {
+      offset: {
+        top: 20,
+        left: 0,
+      },
+    },
+  },
+  table: {
+    rowHeight: 30,
+    rectHeight: 12,
+    paddingLeft: 2,
+  }
+}
+```
+
+
 
 ## Author
 
