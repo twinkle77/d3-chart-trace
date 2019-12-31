@@ -32,9 +32,10 @@ export default class Tooltip {
 
   hide () {
     this.$el
-      .transition()
-      .duration(500)
+      // .transition()
+      // .duration(500)
       .style('opacity', 0)
+      .style('left', '-900px')
 
     return this
   }

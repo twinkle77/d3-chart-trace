@@ -1,18 +1,12 @@
 import { addClass, getClass } from '../util/element'
 
 export default class Card {
-  constructor () {
+  constructor (data) {
+    this.data = data
     this.createFragment()
   }
 
-  destory () {
-    this.wrapper.parentNode.removeChild(this.wrapper)
-  }
-
   createFragment () {
-    const browsers = ['Firefox', 'Chrome', 'Opera',
-      'Safari', 'Internet Explorer']
-
     const oFragment = document.createDocumentFragment()
 
     const oWrapper = document.createElement('div')
@@ -22,26 +16,52 @@ export default class Card {
     const oHeader = document.createElement('div')
     addClass(oHeader, getClass('card-header'))
     oWrapper.appendChild(oHeader)
-
-    // oHeader.innerText = ''
-
     // card-body
     const oBody = document.createElement('div')
     addClass(oBody, getClass('card-body'))
     oWrapper.appendChild(oBody)
 
-    const oUl = document.createElement('ul')
-    oBody.appendChild(oUl)
-
-    browsers.forEach((text) => {
-      const oLi = document.createElement('li')
-      oUl.appendChild(oLi)
-      oLi.innerText = text
-    })
+    this._renderBaseInfo(oBody)
 
     oFragment.append(oWrapper)
 
     this.wrapper = oWrapper
     this.fragment = oFragment
+  }
+
+  _renderBaseInfo (oBody) {
+    const {
+      spanID, operationName, startTime, duration,
+    } = this.data
+
+    const keyVal = [
+      { key: 'SpanID', value: spanID },
+      { key: 'OperationName', value: operationName },
+      { key: 'Start Time', value: `${startTime}ms` },
+      { key: 'Duration', value: `${duration}ms` },
+    ]
+
+    const hostEL = document.createElement('h2')
+    hostEL.innerText = 'apigw-kong-internal.default.mesh.jdcloud.com:8000/*'
+    hostEL.classList.add('host')
+    oBody.appendChild(hostEL)
+
+    const oUl = document.createElement('ul')
+    addClass(oUl, getClass('info-list'))
+    oBody.appendChild(oUl)
+
+    keyVal.forEach(({ key, value }) => {
+      const oLi = document.createElement('li')
+      oLi.classList.add(key.toLowerCase().replace(/\s/, ''))
+      oUl.appendChild(oLi)
+      oLi.innerHTML = `
+        <span class="label">${key}</span>: <span class="value">${value}</span>
+      `
+    })
+  }
+
+  destory () {
+    this.data = null
+    this.wrapper.parentNode.removeChild(this.wrapper)
   }
 }

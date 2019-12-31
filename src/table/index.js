@@ -111,11 +111,12 @@ class Table {
       .attr('style', `height: ${rowHeight}px`)
       .call(this._createColumns(domain).bind(this))
       .on('click.toggle', function toggleHandler () {
+        const rawData = d3.select(this).datum().data
         if (this.isExpanded) {
           this.cardInstance.destory()
           d3.select(this).classed('trace-expanded', this.isExpanded = false)
         } else {
-          this.cardInstance = new Card()
+          this.cardInstance = new Card(rawData)
           insertAfter(this.cardInstance.fragment, this)
           d3.select(this).classed('trace-expanded', this.isExpanded = true)
         }

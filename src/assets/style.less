@@ -109,11 +109,31 @@
         max-width: 75%;
         background: #fff;
         border-radius: 4px;
-        padding: 20px;
-        padding-left: 80px;
+        padding: 15px;
         background-image: linear-gradient(45deg,#2d8cf0,rgba(45,140,240,.6));
         color: #fff;
         box-shadow: 0 2px 3px rgba(45,140,240,.4);
+        h2 {
+          padding: 0;
+          margin: 0;
+          font-size: 18px;
+        }
+
+        .d3-trace-info-list {
+          padding: 0;
+          margin: 0;
+          font-size: 14px;
+          margin-top: 5px;
+          li {
+            list-style: none;
+            padding: 2px 0;
+          }
+          li.host {
+            color: rgba(0,0,0,.85);
+            font-weight: 500;
+            line-height: 1.5;
+          }
+        }
       }
     }
   }
@@ -128,7 +148,6 @@
   border-radius: 2px;
   line-height: 1;
   text-align: center;
-  // display: none;
   opacity: 0;
   box-shadow: -4px 5px 21px -6px rgba(0,0,0,1);
   &:after {
