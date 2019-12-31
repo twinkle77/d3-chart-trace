@@ -88,14 +88,6 @@ class Table {
   }
 
   renderTableRow (domain) {
-    this._tableBody
-      .selectAll(`.${getClass('table-row')}`)
-      .remove()
-
-    this._tableBody
-      .selectAll(`.${getClass('card-wrapper')}`)
-      .remove()
-
     const rowEls = this._tableBody
       .selectAll(`.${getClass('table-row')}`)
       .data(this._allNodes)
@@ -109,7 +101,8 @@ class Table {
       .append('div')
       .classed(getClass('table-row'), true)
       .attr('style', `height: ${rowHeight}px`)
-      .call(this._createColumns(domain).bind(this))
+      .call(this._createLeftColumns().bind(this))
+      .call(this._createRightColumns().bind(this))
       .on('click.toggle', function toggleHandler () {
         const rawData = d3.select(this).datum().data
         if (this.isExpanded) {
@@ -131,11 +124,26 @@ class Table {
     rowEls
       .exit()
       .remove()
+
+    this._renderRect(domain)
   }
 
-  _createColumns (domain) {
-    const rectTool = this._layupRect(domain)
-    const { rowHeight, paddingLeft } = this.options.table
+  _createRightColumns () {
+    const { rowHeight } = this.options.table
+    return function call (selection) {
+      selection
+        .append('div')
+        .classed(getClass('table-right-col'), true)
+        .classed(getClass('table-col'), true)
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', rowHeight)
+        .append('rect')
+    }
+  }
+
+  _createLeftColumns () {
+    const { paddingLeft } = this.options.table
 
     return function call (selection) {
       selection
@@ -165,18 +173,13 @@ class Table {
         .classed(getClass('text'), true)
         .text((node) => node.data.operationName)
 
-      selection
-        .append('div')
-        .classed(getClass('table-right-col'), true)
-        .classed(getClass('table-col'), true)
-        .append('svg')
-        .attr('width', '100%')
-        .attr('height', rowHeight)
-        .append('rect')
-        .call(rectTool)
-
       return selection
     }
+  }
+
+  _renderRect (domain) {
+    const rectTool = this._layupRect(domain)
+    d3.selectAll(`.${getClass('table-right-col')} svg rect`).call(rectTool)
   }
 
   /**
@@ -216,6 +219,14 @@ class Table {
   }
 
   setOptions (data) {
+    // this._tableBody
+    //   .selectAll(`.${getClass('table-row')}`)
+    //   .remove()
+
+    this._tableBody
+      .selectAll(`.${getClass('card-wrapper')}`)
+      .remove()
+
     this.options.treeData = data
     this._transformData()
     this.render()

@@ -12,34 +12,62 @@ import EventBus from './eventBus'
 
 const { spans } = traceData.result
 
-let rootNode = null
-let minStartTime = spans[0].startTime
+let number = 0
 
-for (let i = 0; i < spans.length; i += 1) {
-  const span = spans[i]
+function transformData (spansData) {
+  // eslint-disable-next-line no-shadow
+  let spans = spansData
 
-  minStartTime = Math.min(span.startTime, minStartTime)
+  const count = Math.floor(Math.random() * 10)
 
-  // 父节点
-  if (!rootNode && span.traceID === span.spanID) {
-    rootNode = span
+  for (let i = 0; i < count; i += 1) {
+    spans = spans.concat(spansData)
   }
 
-  for (let j = 0; j < span.references.length; j += 1) {
-    const { spanID } = span.references[j]
-    const targetSpan = spans.find((item) => item.spanID === spanID)
-    if (!targetSpan.children) {
-      targetSpan.children = []
+  if (number % 3 === 0) {
+    spans = spansData
+  }
+
+  spans = JSON.parse(JSON.stringify(spans))
+  number += 1
+
+  if (!spans.length) return []
+
+
+  let rootNode = null
+  let minStartTime = spans[0].startTime
+
+  for (let i = 0; i < spans.length; i += 1) {
+    const span = spans[i]
+    span.children = []
+
+    minStartTime = Math.min(span.startTime, minStartTime)
+
+    // 父节点
+    if (!rootNode && span.traceID === span.spanID) {
+      rootNode = span
     }
-    targetSpan.children.push(span)
-  }
-}
 
-for (let i = 0; i < spans.length; i += 1) {
-  const span = spans[i]
-  span.startTime -= minStartTime
-  span.startTime /= 1000
-  span.endTime = span.startTime + span.duration
+    for (let j = 0; j < span.references.length; j += 1) {
+      const { spanID } = span.references[j]
+      const targetSpan = spans.find((item) => item.spanID === spanID)
+      if (!targetSpan) {
+        break
+      }
+      // if (!targetSpan.children) {
+      //   targetSpan.children = []
+      // }
+      targetSpan.children.push(span)
+    }
+  }
+
+  for (let i = 0; i < spans.length; i += 1) {
+    const span = spans[i]
+    span.startTime -= minStartTime
+    span.startTime /= 1000
+    span.endTime = span.startTime + span.duration
+  }
+  return [rootNode]
 }
 
 class Trace {
@@ -138,22 +166,16 @@ class Trace {
 
 const instance = new Trace(document.body, {
   brushEnd () {},
-  data: [rootNode],
+  data: transformData(spans),
 })
 instance.render()
 
-// const button = document.createElement('button')
-// button.innerHTML = 'tiggle'
-// document.body.appendChild(button)
+const button = document.createElement('button')
+button.innerHTML = 'Data driven'
+document.body.appendChild(button)
 
-// const dataLength = d.length
-
-// button.addEventListener('click', () => {
-//   const data = d.slice(
-//     ...[Math.floor(Math.random() * dataLength), Math.floor(Math.random() * dataLength)].sort((a, b) => a - b),
-//   )
-//   console.log('newData:', data)
-//   instance.setOptions(data.slice(0, 1))
-// }, false)
+button.addEventListener('click', () => {
+  instance.setOptions(transformData(spans))
+}, false)
 
 export default Trace

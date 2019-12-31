@@ -1,4 +1,4 @@
-import { select } from 'd3-selection'
+import { select, selectAll } from 'd3-selection'
 import { format } from 'd3-format'
 import { scaleLinear } from 'd3-scale'
 import {
@@ -12,6 +12,7 @@ import { hierarchy } from 'd3-hierarchy'
 
 export default {
   select,
+  selectAll,
   format,
   scaleLinear,
   extent,
