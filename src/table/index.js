@@ -219,9 +219,9 @@ class Table {
   }
 
   setOptions (data) {
-    // this._tableBody
-    //   .selectAll(`.${getClass('table-row')}`)
-    //   .remove()
+    this._tableBody
+      .selectAll(`.${getClass('table-row')}`)
+      .remove()
 
     this._tableBody
       .selectAll(`.${getClass('card-wrapper')}`)
