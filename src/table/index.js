@@ -146,7 +146,7 @@ class Table {
   }
 
   _createLeftColumns () {
-    const { paddingLeft, infoTemplate } = this.options.table
+    const { paddingLeft, tooltipTemplate } = this.options.table
 
     return function call (selection) {
       const spanEls = selection
@@ -154,7 +154,7 @@ class Table {
         .classed(getClass('table-left-col'), true)
         .classed(getClass('table-col'), true)
         .on('mouseenter', ({ data: rawData }) => {
-          this.tooltip.html(infoTemplate(rawData))
+          this.tooltip.html(tooltipTemplate(rawData))
           this.tooltip.show()
         })
         .on('mouseleave', () => {

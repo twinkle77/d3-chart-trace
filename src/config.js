@@ -31,16 +31,30 @@ export default {
     rowHeight: 30,
     rectHeight: 12,
     paddingLeft: 4,
-    infoTemplate (data) {
+    tooltipTemplate (data) {
       const {
-        spanID, operationName, startTime, duration,
+        spanID, operationName, startTime, duration, process,
       } = data
       return `
         <ul>
-          <li><span class="label">SpanID: </span><span>${spanID}</span></li>
-          <li><span class="label">OperationName: </span><span>${operationName}</span></li>
-          <li><span class="label">Start Time: </span><span>${startTime}ms</span></li>
-          <li><span class="label">Duration: </span><span>${duration}ms</span></li>
+          <li><span class="label">SpanID: </span><span class="value">${spanID}</span></li>
+          <li><span class="label">Service: </span><span class="value">${process.serviceName}</span></li>
+          <li><span class="label">OperationName: </span><span class="value">${operationName}</span></li>
+          <li><span class="label">Start Time: </span><span class="value">${startTime}ms</span></li>
+          <li><span class="label">Duration: </span><span class="value">${duration}ms</span></li>
+        </ul>
+      `
+    },
+    infoTemplate (data) {
+      const {
+        spanID, startTime, duration, process,
+      } = data
+      return `
+        <ul>
+          <li><span class="label">SpanID: </span><span class="value">${spanID}</span></li>
+          <li><span class="label">Service: </span><span class="value">${process.serviceName}</span></li>
+          <li><span class="label">Start Time: </span><span class="value">${startTime}ms</span></li>
+          <li><span class="label">Duration: </span><span class="value">${duration}ms</span></li>
         </ul>
       `
     },

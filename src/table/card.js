@@ -32,7 +32,7 @@ export default class Card {
 
   _renderBaseInfo (oBody) {
     const hostEL = document.createElement('h2')
-    hostEL.innerText = 'apigw-kong-internal.default.mesh.jdcloud.com:8000/*'
+    hostEL.innerText = this.data.operationName
     hostEL.classList.add('host')
     oBody.appendChild(hostEL)
 
