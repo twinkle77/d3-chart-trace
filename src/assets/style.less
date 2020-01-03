@@ -1,4 +1,5 @@
 @import 'var.less';
+@import 'iconfont.less';
 
 .d3-trace-wrapper {
   width: 100%;
@@ -227,5 +228,54 @@
     border-top: @tooltipTriangleWidth solid transparent;
     border-left: @tooltipTriangleWidth solid @tooltipColor;
     margin-top: -@tooltipTriangleWidth;
+  }
+}
+
+.d3-trace-collapse {
+  margin-top: 0px;
+  .collapse-item {
+    margin: 10px 0;
+  }
+  .collapse-item:last-child {
+    margin-bottom: 0px;
+  }
+  .collapse {
+    background-color: #f8f8f82e;
+    border-radius: 3px;
+    border: 1px solid #dcdee2;
+  }
+  .collapse-header {
+    height: 38px;
+    line-height: 38px;
+    padding-left: 16px;
+    color: white;
+    cursor: pointer;
+    position: relative;
+  }
+  .collapse-body {
+    color: #515a6e;
+    padding: 10px 15px;
+    background-color: #fff;
+    box-sizing: border-box;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      td {
+        padding: 5px 5px;
+        vertical-align: top;
+      }
+      tr:nth-child(2n) > td {
+        background: #f5f5f5;
+      }
+      .label-td {
+        width: 180px;
+        font-size: 14px;
+        color: #888;
+        white-space: pre;
+      }
+      .value-tr {
+        font-size: 14px;
+      }
+    }
   }
 }

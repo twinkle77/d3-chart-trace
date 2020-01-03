@@ -831,7 +831,12 @@ export default {
         warnings: null,
         process: {
           serviceName: 'jdsf-client-trace',
-          tags: [],
+          tags: [
+            {
+              key: 'ip',
+              value: '10.226.212.11',
+            },
+          ],
         },
       },
       {
@@ -858,7 +863,7 @@ export default {
           {
             key: 'http.url',
             type: 'string',
-            value: 'http://10.0.0.59:8888/server/jdsf-server1',
+            value: 'http://10.0.0.59:8888/server/jdsf-server1http://10.0.0.59:8888/server/jdsf-server1http://10.0.0.59:8888/server/jdsf-server1http://10.0.0.59:8888/server/jdsf-server1',
             typ: 'string',
           },
           {
@@ -943,7 +948,16 @@ export default {
         warnings: null,
         process: {
           serviceName: 'jdsf-client-trace1',
-          tags: [],
+          tags: [
+            {
+              key: 'ip',
+              value: '10.226.212.11',
+            },
+            {
+              key: 'ip',
+              value: '10.226.212.11',
+            },
+          ],
         },
       },
       {
@@ -1478,7 +1492,12 @@ export default {
         warnings: null,
         process: {
           serviceName: 'jdsf-client-trace1',
-          tags: [],
+          tags: [
+            {
+              key: 'ip',
+              value: '10.226.212.11',
+            },
+          ],
         },
       },
     ],
