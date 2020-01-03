@@ -44,7 +44,10 @@ class Table {
     if (isFunction(this.options.renerTableHeader)) {
       this.options.renerTableHeader(leftCol)
     } else {
-      leftCol.text('Service')
+      leftCol
+        .append('span')
+        .classed('title', true)
+        .text('Service & Operation')
     }
 
     this._rightCol = rightCol
@@ -92,7 +95,7 @@ class Table {
       .selectAll(`.${getClass('table-row')}`)
       .data(this._allNodes)
 
-    const { rowHeight } = this.options.table
+    const { rowHeight, infoTemplate } = this.options.table
     const that = this
 
     // enter集合
@@ -109,7 +112,7 @@ class Table {
           this.cardInstance.destory()
           d3.select(this).classed('trace-expanded', this.isExpanded = false)
         } else {
-          this.cardInstance = new Card(rawData)
+          this.cardInstance = new Card(rawData, infoTemplate)
           insertAfter(this.cardInstance.fragment, this)
           d3.select(this).classed('trace-expanded', this.isExpanded = true)
         }
@@ -143,26 +146,15 @@ class Table {
   }
 
   _createLeftColumns () {
-    const { paddingLeft } = this.options.table
+    const { paddingLeft, infoTemplate } = this.options.table
 
     return function call (selection) {
-      selection
+      const spanEls = selection
         .append('div')
         .classed(getClass('table-left-col'), true)
         .classed(getClass('table-col'), true)
         .on('mouseenter', ({ data: rawData }) => {
-          const {
-            operationName, startTime, duration, spanID,
-          } = rawData
-
-          const html = `
-            <p>spanID: ${spanID}</p>
-            <p>operationName: ${operationName}</p>
-            <p>startTime: ${startTime}ms</p>
-            <p>duration: ${duration}ms</p>
-          `
-
-          this.tooltip.html(html)
+          this.tooltip.html(infoTemplate(rawData))
           this.tooltip.show()
         })
         .on('mouseleave', () => {
@@ -170,8 +162,25 @@ class Table {
         })
         .append('span')
         .attr('style', (node) => `padding-left: ${paddingLeft * node.depth}%`)
-        .classed(getClass('text'), true)
-        .text((node) => node.data.operationName)
+        .classed('span-wrapper', true)
+
+      const temp = spanEls
+        .append('span')
+        .classed('service-name', true)
+
+      temp
+        .append('span')
+        .classed('span-color', true)
+        .style('border-color', (node) => colorGenerator.getHexColor(node.data.process.serviceName))
+
+      temp
+        .append('span')
+        .text((node) => node.data.process.serviceName)
+
+      spanEls
+        .append('span')
+        .classed('operation-name', true)
+        .text((node) => `${node.data.operationName}`)
 
       return selection
     }
@@ -202,7 +211,7 @@ class Table {
         .attr('y', rowHeight / 2 - rectHeight / 2)
         .attr('width', (node) => (`${xScale(node.data.endTime) - xScale(node.data.startTime)}`))
         .attr('height', rectHeight)
-        .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.spanID)}`)
+        .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.process.serviceName)}`)
     }
   }
 

@@ -829,6 +829,10 @@ export default {
           },
         ],
         warnings: null,
+        process: {
+          serviceName: 'jdsf-client-trace',
+          tags: [],
+        },
       },
       {
         traceID: '98b12c0ddcfeede1',
@@ -937,12 +941,16 @@ export default {
           },
         ],
         warnings: null,
+        process: {
+          serviceName: 'jdsf-client-trace1',
+          tags: [],
+        },
       },
       {
         traceID: '98b12c0ddcfeede1',
         spanID: 'cec408d6dc9b3c14',
         flags: 1,
-        operationName: 'requestServer1',
+        operationName: 'requestServer1requestServer1requestServer1requestServer1requestServer1',
         references: [
           {
             refType: 'CHILD_OF',
@@ -1468,6 +1476,10 @@ export default {
           },
         ],
         warnings: null,
+        process: {
+          serviceName: 'jdsf-client-trace1',
+          tags: [],
+        },
       },
     ],
   },

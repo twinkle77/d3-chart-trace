@@ -1,8 +1,9 @@
 import { addClass, getClass } from '../util/element'
 
 export default class Card {
-  constructor (data) {
+  constructor (data, templateFunction) {
     this.data = data
+    this.templateFunction = templateFunction
     this.createFragment()
   }
 
@@ -30,34 +31,16 @@ export default class Card {
   }
 
   _renderBaseInfo (oBody) {
-    const {
-      spanID, operationName, startTime, duration,
-    } = this.data
-
-    const keyVal = [
-      { key: 'SpanID', value: spanID },
-      { key: 'OperationName', value: operationName },
-      { key: 'Start Time', value: `${startTime}ms` },
-      { key: 'Duration', value: `${duration}ms` },
-    ]
-
     const hostEL = document.createElement('h2')
     hostEL.innerText = 'apigw-kong-internal.default.mesh.jdcloud.com:8000/*'
     hostEL.classList.add('host')
     oBody.appendChild(hostEL)
 
-    const oUl = document.createElement('ul')
-    addClass(oUl, getClass('info-list'))
-    oBody.appendChild(oUl)
+    const oDiv = document.createElement('div')
 
-    keyVal.forEach(({ key, value }) => {
-      const oLi = document.createElement('li')
-      oLi.classList.add(key.toLowerCase().replace(/\s/, ''))
-      oUl.appendChild(oLi)
-      oLi.innerHTML = `
-        <span class="label">${key}</span>: <span class="value">${value}</span>
-      `
-    })
+    oDiv.innerHTML = this.templateFunction(this.data)
+    addClass(oDiv, getClass('info-list'))
+    oBody.appendChild(oDiv)
   }
 
   destory () {

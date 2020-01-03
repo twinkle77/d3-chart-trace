@@ -111,7 +111,7 @@ export default class Bar {
       .attr('y', (_, index) => this._yScale(index) + margin)
       .attr('width', (node) => this._xScale(node.data.endTime) - this._xScale(node.data.startTime))
       .attr('height', barHeight)
-      .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.spanID)}`)
+      .attr('style', (node) => `fill:${colorGenerator.getHexColor(node.data.process.serviceName)}`)
 
     rectEls
       .exit()
