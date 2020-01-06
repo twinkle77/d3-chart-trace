@@ -112,7 +112,10 @@ class Table {
           this.cardInstance.destory()
           d3.select(this).classed('trace-expanded', this.isExpanded = false)
         } else {
-          this.cardInstance = new Card(rawData, infoTemplate)
+          this.cardInstance = new Card(rawData, {
+            templateFunction: infoTemplate,
+            event: that.options.event,
+          })
           insertAfter(this.cardInstance.fragment, this)
           d3.select(this).classed('trace-expanded', this.isExpanded = true)
         }

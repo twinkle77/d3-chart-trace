@@ -126,7 +126,10 @@ class Axis {
     const axis = this._posFn()
       .scale(this._scaleFn)
       // 不使用ticks而使用tickValues指定刻度
-      .tickValues([...d3.range(min, max, (max - min) / this.options.tickCount), max].map((i) => parseInt(i, 10)))
+      .tickValues(
+        [...d3.range(min, max, (max - min) / this.options.tickCount), max]
+          .map((i) => parseInt(i, 10)),
+      )
       .tickSize(this.options.tickSize)
       .tickPadding(this.options.tickPadding)
       .tickFormat(this._format)

@@ -235,47 +235,57 @@
   margin-top: 0px;
   .collapse-item {
     margin: 10px 0;
+    .collapse {
+      background-image: linear-gradient(45deg,#2d8cf0,rgba(45,140,240,.2));
+      background-color: #f8f8f82e;
+      border-radius: 3px;
+      border: 1px solid #dcdee2;
+      .collapse-header {
+        height: 38px;
+        line-height: 38px;
+        padding-left: 16px;
+        color: white;
+        cursor: pointer;
+        position: relative;
+      }
+      .collapse-body {
+        color: #515a6e;
+        padding: 10px 15px;
+        background-color: #fff;
+        box-sizing: border-box;
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          td {
+            padding: 5px 5px;
+            vertical-align: top;
+          }
+          tr:nth-child(2n) > td {
+            background: #f5f5f5;
+          }
+          .label-td {
+            width: 180px;
+            font-size: 14px;
+            color: #888;
+            white-space: pre;
+          }
+          .value-tr {
+            font-size: 14px;
+          }
+        }
+        .log-item {
+          margin: 10px 0;
+        }
+        .log-item:first-child {
+          margin-top: 0px;
+        }
+        .log-item:last-child {
+          margin-bottom: 0px;
+        }
+      }
+    }
   }
   .collapse-item:last-child {
     margin-bottom: 0px;
-  }
-  .collapse {
-    background-color: #f8f8f82e;
-    border-radius: 3px;
-    border: 1px solid #dcdee2;
-  }
-  .collapse-header {
-    height: 38px;
-    line-height: 38px;
-    padding-left: 16px;
-    color: white;
-    cursor: pointer;
-    position: relative;
-  }
-  .collapse-body {
-    color: #515a6e;
-    padding: 10px 15px;
-    background-color: #fff;
-    box-sizing: border-box;
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      td {
-        padding: 5px 5px;
-        vertical-align: top;
-      }
-      tr:nth-child(2n) > td {
-        background: #f5f5f5;
-      }
-      .label-td {
-        width: 180px;
-        font-size: 14px;
-        color: #888;
-        white-space: pre;
-      }
-      .value-tr {
-        font-size: 14px;
-      }
-    }
   }
 }

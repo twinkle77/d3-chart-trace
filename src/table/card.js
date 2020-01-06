@@ -2,9 +2,10 @@ import { addClass, getClass } from '@/util/element'
 import Collapse from './collapse'
 
 export default class Card {
-  constructor (data, templateFunction) {
+  constructor (data, { templateFunction, event }) {
     this.data = data
     this.templateFunction = templateFunction
+    this.event = event
     this.createFragment()
   }
 
@@ -57,6 +58,7 @@ export default class Card {
     this.tagsColInstance = new Collapse(tagsCol, {
       title: 'Tags',
       template: this._getTagsTemplate(),
+      event: this.event,
     })
 
     const processCol = document.createElement('div')
@@ -64,18 +66,50 @@ export default class Card {
     this.processColInsance = new Collapse(processCol, {
       title: 'Process',
       template: this._getProcessTemplate(),
+      event: this.event,
     })
 
     const logsCol = document.createElement('div')
     logsCol.classList.add('collapse-logs')
     this.logColInstance = new Collapse(logsCol, {
       title: 'Logs',
+      event: this.event,
+      customBodyFunc: (bodyEle) => {
+        this._getLogsTemplate(bodyEle)
+      },
     });
 
     [tagsCol, processCol, logsCol].forEach((el) => {
       el.classList.add('collapse-item')
       collapseContainer.appendChild(el)
     })
+  }
+
+  _getLogsTemplate (wrapper) {
+    this.collapseList = []
+    const { logs } = this.data
+    if (!logs || logs.length === 0) return false
+    return (logs || []).forEach((item) => {
+      const { timestamp, fields } = item
+      const el = document.createElement('div')
+      el.classList.add('log-item')
+      wrapper.appendChild(el)
+      this.collapseList.push(new Collapse(el, {
+        title: `${timestamp}ms`,
+        template: this._getLogsFieldsTemplate(fields),
+        event: this.event,
+      }))
+    })
+  }
+
+  _getLogsFieldsTemplate (fields) {
+    return `
+    <table>
+      <tbody>
+        ${fields.map(({ key, value }) => `<tr><td class="label-td">${key}</td><td class="value-td">${value}</td></tr>`).join('')}
+      </tbody>
+    </table>
+    `
   }
 
   _getTagsTemplate () {
@@ -105,10 +139,15 @@ export default class Card {
   }
 
   destory () {
+    this.event = null
     this.data = null
     this.wrapper.parentNode.removeChild(this.wrapper)
     this.tagsColInstance.destory()
     this.processColInsance.destory()
     this.logColInstance.destory()
+    this.collapseList.forEach((el) => {
+      el.destory()
+    })
+    this.collapseList = []
   }
 }

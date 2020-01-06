@@ -8,12 +8,21 @@ export default class Collapse {
     this.iconFontClass = ['icon-arrowsfuben', 'icon-arrow2fuben']
   }
 
+  getWrapperElement () {
+    return this.wrapperElement
+  }
+
   _init () {
     this._insertTemplate()
 
+    this.wrapperElement = this.target.querySelector('collapse')
     this.headerElement = this.target.querySelector('.collapse-header')
     this.iconElement = this.target.querySelector('.iconfont')
     this.bodyElement = this.target.querySelector('.collapse-body')
+
+    if (!this.options.template) {
+      this.options.customBodyFunc && this.options.customBodyFunc(this.bodyElement)
+    }
 
     this._bindEvent()
   }
@@ -34,7 +43,11 @@ export default class Collapse {
   }
 
   _bindEvent () {
-    this.headerElement.addEventListener('click', () => { this.toggleHandler() }, false)
+    const { event } = this.options
+    this.headerElement.addEventListener('click', () => {
+      this.toggleHandler()
+      event.emit('GRAPH_RE_RENDER')
+    }, false)
   }
 
   toggleHandler () {

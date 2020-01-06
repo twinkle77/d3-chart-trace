@@ -44,7 +44,9 @@ export default class Bar {
 
   /** 计算y轴的比例尺 */
   _computeYscale () {
-    this._yScale = d3.scaleLinear().domain([0, this.descendants.length]).range([0, this.chartHeight])
+    this._yScale = d3.scaleLinear()
+      .domain([0, this.descendants.length])
+      .range([0, this.chartHeight])
     return this
   }
 
