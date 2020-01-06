@@ -1,9 +1,9 @@
 import extend from 'extend'
-import d3 from '../d3'
-import { getClass } from '../util/element'
-import config from '../config'
-import colorGenerator from '../util/colorGenerator'
-import { computedTimeRange } from '../util/tool'
+import d3 from '@/d3'
+import { getClass } from '@/util/element'
+import config from '@/config'
+import colorGenerator from '@/util/colorGenerator'
+import { computedTimeRange } from '@/util/tool'
 
 export default class Bar {
   constructor (target, options = {}) {

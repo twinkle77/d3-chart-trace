@@ -1,11 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import d3 from '@/d3'
-import { getClass } from '../util/element'
+import { getClass } from './element'
 
-/**
- * 功能：
- * 用于构造布局
- */
 class View {
   /**
    * 创建基础容器
@@ -68,12 +64,6 @@ class View {
       row: rowEl,
     }
   }
-
-  // createSpan (target) {
-  //   return target
-  //     .append('span')
-  //     .classed(getClass('text'), true)
-  // }
 }
 
 export default new View()

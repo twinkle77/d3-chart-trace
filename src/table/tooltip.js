@@ -1,7 +1,7 @@
 import { event } from 'd3-selection'
 import offset from 'document-offset'
-import { getClass } from '../util/element'
-import d3 from '../d3'
+import { getClass } from '@/util/element'
+import d3 from '@/d3'
 
 let count = 0
 

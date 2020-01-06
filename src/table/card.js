@@ -1,4 +1,4 @@
-import { addClass, getClass } from '../util/element'
+import { addClass, getClass } from '@/util/element'
 import Collapse from './collapse'
 
 export default class Card {

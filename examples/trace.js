@@ -1,4 +1,4 @@
-export default {
+let traceData = {
   requestId: 'bp0u642doht8co08k1ckhqt747mm1e6w',
   result: {
     traceID: '98b12c0ddcfeede1',

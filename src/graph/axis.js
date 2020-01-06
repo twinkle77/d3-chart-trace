@@ -1,8 +1,8 @@
 import extend from 'extend'
-import d3 from '../d3'
-import { getClass } from '../util/element'
-import config from '../config'
-import { computedTimeRange } from '../util/tool'
+import d3 from '@/d3'
+import { getClass } from '@/util/element'
+import config from '@/config'
+import { computedTimeRange } from '@/util/tool'
 
 const POSITION = {
   TOP: d3.axisTop,

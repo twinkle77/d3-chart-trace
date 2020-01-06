@@ -1,17 +1,12 @@
 import { terser } from "rollup-plugin-terser"
 import { eslint } from 'rollup-plugin-eslint'
-
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
-
 import replace from '@rollup/plugin-replace'
 import alias from '@rollup/plugin-alias'
 import babel from 'rollup-plugin-babel'
-
 import less from 'rollup-plugin-less'
-
 import path from 'path'
-
 import * as meta from "./package.json"
 
 const pathResolve = p => path.resolve(__dirname, p)

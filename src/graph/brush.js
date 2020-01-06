@@ -1,8 +1,8 @@
 import { event } from 'd3-selection'
 import extend from 'extend'
-import d3 from '../d3'
-import { getClass } from '../util/element'
-import config from '../config'
+import d3 from '@/d3'
+import { getClass } from '@/util/element'
+import config from '@/config'
 
 export default class Brush {
   constructor (container, options = {}) {
