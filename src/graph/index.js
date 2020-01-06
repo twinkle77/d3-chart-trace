@@ -53,7 +53,7 @@ class Graph {
         this.render()
       })
 
-    this.options.eventBus.on('GRAPH_RENDER', () => {
+    this.options.event.on('GRAPH_RE_RENDER', () => {
       this.render()
     })
   }

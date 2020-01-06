@@ -116,11 +116,8 @@ class Table {
           insertAfter(this.cardInstance.fragment, this)
           d3.select(this).classed('trace-expanded', this.isExpanded = true)
         }
-        /**
-         * card的展开可能会导致滚动条的出现，需要触发graph图的重新计算
-         */
-        that.options.eventBus.emit('GRAPH_RENDER')
-        that.options.eventBus.emit('TABLE_AXIS_RENDER')
+
+        that.options.event.emit('GRAPH_RE_RENDER')
       })
 
     // exit集合
@@ -222,7 +219,7 @@ class Table {
         this.render()
       })
 
-    this.options.eventBus.on('TABLE_AXIS_RENDER', () => {
+    this.options.event.on('GRAPH_RE_RENDER', () => {
       this.renderHeaderAxis(this._headerAxis.domain())
     })
   }

@@ -7,7 +7,7 @@ import Graph from './graph/index'
 import Table from './table/index'
 import d3 from './d3'
 import { warn } from './util/debug'
-import EventBus from './eventBus'
+import Event from './util/event'
 
 class Trace {
   constructor (target = 'target', options = {}) {
@@ -23,7 +23,7 @@ class Trace {
   _init (target) {
     this._insertLayout(query(target))
 
-    this.eventBus = new EventBus()
+    this.event = new Event()
 
     this._genData()
     this._initChart()
@@ -41,14 +41,14 @@ class Trace {
   _initChart () {
     this._table = new Table(this._tableWrapper, {
       treeData: this._treeData,
-      eventBus: this.eventBus,
+      event: this.event,
       table: this.options.table,
     })
 
     this._graph = new Graph(this._graphWrapper, {
       treeData: this._treeData,
       brushEnd: this._brushEndHandler.bind(this),
-      eventBus: this.eventBus,
+      event: this.event,
       ...this.options.graph,
     })
   }
@@ -91,8 +91,8 @@ class Trace {
   destory () {
     this._table && this._table.destory()
     this._graph && this._graph.destory()
-    this.eventBus.off()
-    this.eventBus = null
+    this.event.off()
+    this.event = null
   }
 
   render () {
