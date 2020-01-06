@@ -1,6 +1,6 @@
 {
   "name": "d3-trace",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "用于描述请求之间的调用关系",
   "main": "dist/d3-trace.min.js",
   "module": "dist/d3-trace.js",
