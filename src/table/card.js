@@ -53,33 +53,45 @@ export default class Card {
     collapseContainer.classList.add(getClass('collapse'))
     oBody.appendChild(collapseContainer)
 
-    const tagsCol = document.createElement('div')
-    tagsCol.classList.add('collapse-tags')
-    this.tagsColInstance = new Collapse(tagsCol, {
-      title: 'Tags',
-      template: this._getTagsTemplate(),
-      event: this.event,
-    })
+    const { tags, process, logs } = this.data
+    const instances = []
 
-    const processCol = document.createElement('div')
-    processCol.classList.add('collapse-process')
-    this.processColInsance = new Collapse(processCol, {
-      title: 'Process',
-      template: this._getProcessTemplate(),
-      event: this.event,
-    })
+    if (tags && tags.length > 0) {
+      const tagsCol = document.createElement('div')
+      tagsCol.classList.add('collapse-tags')
+      this.tagsColInstance = new Collapse(tagsCol, {
+        title: 'Tags',
+        template: this._getTagsTemplate(),
+        event: this.event,
+      })
+      instances.push(tagsCol)
+    }
 
-    const logsCol = document.createElement('div')
-    logsCol.classList.add('collapse-logs')
-    this.logColInstance = new Collapse(logsCol, {
-      title: 'Logs',
-      event: this.event,
-      customBodyFunc: (bodyEle) => {
-        this._getLogsTemplate(bodyEle)
-      },
-    });
+    if (process) {
+      const processCol = document.createElement('div')
+      processCol.classList.add('collapse-process')
+      this.processColInsance = new Collapse(processCol, {
+        title: 'Process',
+        template: this._getProcessTemplate(),
+        event: this.event,
+      })
+      instances.push(processCol)
+    }
 
-    [tagsCol, processCol, logsCol].forEach((el) => {
+    if (logs && logs.length > 0) {
+      const logsCol = document.createElement('div')
+      logsCol.classList.add('collapse-logs')
+      this.logColInstance = new Collapse(logsCol, {
+        title: 'Logs',
+        event: this.event,
+        customBodyFunc: (bodyEle) => {
+          this._getLogsTemplate(bodyEle)
+        },
+      })
+      instances.push(logsCol)
+    }
+
+    instances.forEach((el) => {
       el.classList.add('collapse-item')
       collapseContainer.appendChild(el)
     })
