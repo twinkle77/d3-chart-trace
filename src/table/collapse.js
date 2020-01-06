@@ -8,14 +8,9 @@ export default class Collapse {
     this.iconFontClass = ['icon-arrowsfuben', 'icon-arrow2fuben']
   }
 
-  getWrapperElement () {
-    return this.wrapperElement
-  }
-
   _init () {
     this._insertTemplate()
 
-    this.wrapperElement = this.target.querySelector('collapse')
     this.headerElement = this.target.querySelector('.collapse-header')
     this.iconElement = this.target.querySelector('.iconfont')
     this.bodyElement = this.target.querySelector('.collapse-body')
@@ -33,7 +28,7 @@ export default class Collapse {
       <div class="collapse">
         <div class="collapse-header">
           <i class="iconfont icon-arrow2fuben"></i>
-          ${title}
+          <span class="title">${title}</span>
         </div>
         <div class="collapse-body" style="display: none;">
           ${template || ''}
