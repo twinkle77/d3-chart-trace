@@ -41,7 +41,7 @@ instance.destory()
 instance.setOptions(newData)
 ```
 
-Default configuration
+[Default configuration](https://github.com/twinkle77/d3-trace)
 
 ```javascript
 {
@@ -77,11 +77,13 @@ Default configuration
     rowHeight: 30,
     rectHeight: 12,
     paddingLeft: 2,
+    tooltipTemplate (data) {}
+    infoTemplate (data) {}
   }
 }
 ```
 
-
+[Data structure](https://github.com/twinkle77/d3-trace/blob/master/examples/trace.js)
 
 ## Author
 
