@@ -8,32 +8,10 @@
 </head>
 <body>
   <script src="/dist/d3-trace.js"></script>
-  <script src="./trace.js"></script>
+  <script src="./trace1.js"></script>
+  <script src="./trace2.js"></script>
   <script>
-  const { spans } = traceData.result
-
-  let number = 0
-
-  function transformData (spansData) {
-    // eslint-disable-next-line no-shadow
-    let spans = spansData
-
-    const count = Math.floor(Math.random() * 10)
-
-    for (let i = 0; i < count; i += 1) {
-      spans = spans.concat(spansData)
-    }
-
-    if (number % 3 === 0) {
-      spans = spansData
-    }
-
-    spans = JSON.parse(JSON.stringify(spans))
-    number += 1
-
-    if (!spans.length) return []
-
-
+  function transformData(spans) {
     let rootNode = null
     let minStartTime = spans[0].startTime
 
@@ -41,13 +19,15 @@
       const span = spans[i]
       span.children = []
 
+      // 寻找最小开始时间
       minStartTime = Math.min(span.startTime, minStartTime)
 
-      // 父节点
+      // 寻找根节点
       if (!rootNode && span.traceID === span.spanID) {
         rootNode = span
       }
 
+      // 寻找父节点
       for (let j = 0; j < span.references.length; j += 1) {
         const { spanID } = span.references[j]
         const targetSpan = spans.find((item) => item.spanID === spanID)
@@ -58,6 +38,7 @@
       }
     }
 
+    // 添加endTime字段、时间转为ms
     for (let i = 0; i < spans.length; i += 1) {
       const span = spans[i]
       span.startTime -= minStartTime
@@ -68,9 +49,11 @@
   }
   </script>
   <script>
+    let number = 1
+    let data = [traceData1, traceData2]
     const instance = new window['d3-trace'](document.body, {
       brushEnd () {},
-      data: transformData(spans),
+      data: transformData(traceData1),
     })
     instance.render()
 
@@ -79,7 +62,8 @@
     document.body.appendChild(button)
 
     button.addEventListener('click', () => {
-      instance.setOptions(transformData(spans))
+      instance.setOptions(transformData(data[number % data.length]))
+      number++
     }, false)
   </script>
 </body>
