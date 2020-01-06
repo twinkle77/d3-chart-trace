@@ -2,8 +2,8 @@
   "name": "d3-trace",
   "version": "0.0.1",
   "description": "用于描述请求之间的调用关系",
-  "main": "index.js",
-  "module": "src/index.js",
+  "main": "dist/d3-trace.min.js",
+  "module": "dist/d3-trace.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "live-server --watch=./dist",
