@@ -28,7 +28,7 @@ yarn add d3-trace
 import Trace from 'd3-trace'
 const instance = new Trace(document.body, {
   brushEnd () {},
-  data,
+  data: [{}, ...], // 空数组或空数据默认不会完成初始化操作，所以要确保该数组不能为空，以便完成图的初始化操作
 })
 
 // render

@@ -97,8 +97,8 @@ class Trace {
 
   render () {
     nextTick(() => {
-      this._table.render()
-      this._graph.render()
+      this._table && this._table.render()
+      this._graph && this._graph.render()
     })
   }
 }
