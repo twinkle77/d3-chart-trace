@@ -83,7 +83,27 @@ instance.setOptions(newData)
 }
 ```
 
-[Data structure](https://github.com/twinkle77/d3-trace/blob/master/examples/trace.js)
+[Data structure](https://github.com/twinkle77/d3-trace/blob/master/examples/trace1.js)
+
+```javascript
+{
+  "traceID": "",
+  "spanID": "",
+  "operationName": "",
+  "startTime": 0,
+  "duration": 6.626,
+  "endTime": 6.626,
+  "tags": [],
+  "logs": [],
+  "warnings": null,
+  "process": {},
+  "children": []
+}
+```
+
+## Jaeger
+
+[Jaeger UI](https://github.com/jaegertracing/jaeger-ui)
 
 ## Author
 

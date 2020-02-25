@@ -1,6 +1,5 @@
-import {
-  schemeTableau10,
-} from 'd3-scale-chromatic'
+
+const colors = ['#edc949', '#bab0ab', '#76b7b2', '#4e79a7', '#9c755f', '#59a14f', '#ff9da7', '#af7aa1', '#e15759', '#f28e2c']
 
 function toRgb (str) {
   if (!str || str.length !== 7) {
@@ -18,8 +17,8 @@ class ColorGenerator {
   }
 
   constructor () {
-    this.hexColors = schemeTableau10
-    this.rgbColors = schemeTableau10.map(toRgb)
+    this.hexColors = colors
+    this.rgbColors = colors.map(toRgb)
     this.cache = new Map()
     this.curIndex = 0
   }

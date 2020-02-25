@@ -269,6 +269,7 @@
         background-color: #fff;
         box-sizing: border-box;
         table {
+          table-layout: fixed;
           width: 100%;
           border-collapse: collapse;
           td {
@@ -284,8 +285,10 @@
             color: #888;
             white-space: pre;
           }
-          .value-tr {
+          .value-td {
             font-size: 14px;
+            word-wrap: break-word;
+            word-break: break-all;
           }
         }
         .log-item {

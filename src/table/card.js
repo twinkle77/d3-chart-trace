@@ -107,7 +107,7 @@ export default class Card {
       el.classList.add('log-item')
       wrapper.appendChild(el)
       this.collapseList.push(new Collapse(el, {
-        title: `${timestamp}ms`,
+        title: `${timestamp}`,
         template: this._getLogsFieldsTemplate(fields),
         event: this.event,
       }))
@@ -154,10 +154,10 @@ export default class Card {
     this.event = null
     this.data = null
     this.wrapper.parentNode.removeChild(this.wrapper)
-    this.tagsColInstance.destory()
-    this.processColInsance.destory()
-    this.logColInstance.destory()
-    this.collapseList.forEach((el) => {
+    this.tagsColInstance && this.tagsColInstance.destory()
+    this.processColInsance && this.processColInsance.destory()
+    this.logColInstance && this.logColInstance.destory()
+    Array.isArray(this.collapseList) && this.collapseList.forEach((el) => {
       el.destory()
     })
     this.collapseList = []
