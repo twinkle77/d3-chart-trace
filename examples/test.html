@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script src="/dist/d3-trace.js"></script>
+  <script src="./trace1.js"></script>
+  <script src="./trace2.js"></script>
+  <script>
+  function transformData(spans) {
+    let rootNode = null
+    let minStartTime = spans[0].startTime
+
+    for (let i = 0; i < spans.length; i += 1) {
+      const span = spans[i]
+      span.children = []
+
+      // 寻找最小开始时间
+      // minStartTime = Math.min(span.startTime, minStartTime)
+
+      // 寻找根节点
+      if (!rootNode && span.traceID === span.spanID) {
+        rootNode = span
+      }
+
+      // 寻找父节点
+      for (let j = 0; j < span.references.length; j += 1) {
+        const { spanID } = span.references[j]
+        const targetSpan = spans.find((item) => item.spanID === spanID)
+        if (!targetSpan) {
+          break
+        }
+        targetSpan.children.push(span)
+      }
+    }
+
+    // 添加endTime字段、时间转为ms
+    // for (let i = 0; i < spans.length; i += 1) {
+    //   const span = spans[i]
+    //   span.startTime -= minStartTime
+    //   span.startTime /= 1000
+    //   span.endTime = span.startTime + span.duration
+    // }
+
+    // console.log([rootNode])
+    return [rootNode]
+  }
+
+  function correctingTime(parentNode) {
+    const t1 = parentNode.startTime
+    const t4 = parentNode.startTime + parentNode.duration
+
+    parentNode.endTime = t4
+
+    parentNode.children && parentNode.children.forEach((childNode) => {
+      const { startTime, duration } = childNode
+      let t2 = childNode.startTime
+      let t3 = childNode.startTime + childNode.duration
+
+      console.log('矫正前：', t1, t2, t3, t4, t1 < t2, t2 < t3, t3 < t4)
+      t2 = t1 + ((t4 - t1) - (t3 - t2)) / 2
+      t3 = t4 - ((t4 - t1) - (t3 - t2)) / 2
+      console.log('矫正后：', t1, t2, t3, t4, t1 < t2, t2 < t3, t3 < t4)
+
+      childNode.startTime = t2
+      childNode.duration = t3 - t2
+
+      correctingTime(childNode)
+    })
+  }
+
+  // const data = transformData(traceData2)
+  // console.log(JSON.parse(JSON.stringify(data)))
+
+  // data.forEach((node) => {
+  //   correctingTime(node)
+  // })
+
+  // console.log(data)
+
+  function getData(traceData2) {
+    const data = transformData(traceData2)
+  console.log(JSON.parse(JSON.stringify(data)))
+
+  data.forEach((node) => {
+    correctingTime(node)
+  })
+
+  console.log(data)
+  return data
+  }
+  </script>
+  <script>
+    let number = 1
+    let data = [traceData1, traceData2]
+    const instance = new window['d3-trace'](document.body, {
+      brushEnd () {},
+      data: getData(traceData1),
+    })
+    instance.render()
+
+    const button = document.createElement('button')
+    button.innerHTML = 'Data driven'
+    document.body.appendChild(button)
+
+    button.addEventListener('click', () => {
+      instance.setOptions(getData(data[number % data.length]))
+      number++
+    }, false)
+  </script>
+</body>
+</html>
