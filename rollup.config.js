@@ -58,8 +58,6 @@ const config = [
 ]
 
 if (process.env.NODE_ENV === 'production') {
-  plugins.push(terser())
-
   config.push({
     input: 'src/index.js',
     output: {
@@ -67,7 +65,7 @@ if (process.env.NODE_ENV === 'production') {
       file: `dist/${meta.name}.min.js`,
       format: 'umd'
     },
-    plugins
+    plugins: [...plugins, terser()]
   })
 }
 
