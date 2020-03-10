@@ -8,10 +8,7 @@ import Table from './table/index'
 import d3 from './d3'
 import { warn } from './util/debug'
 import Event from './util/event'
-
-import observer from './util/observer.js'
-
-console.log(observer)
+import Observer from './util/observer'
 
 class Trace {
   constructor (target = 'target', options = {}) {
@@ -68,6 +65,13 @@ class Trace {
     this._tableWrapper = tableWrapper
   }
 
+  _observeMainWrapper (target) {
+    this.observer = new Observer(() => {
+      this.event.emit('RE_RENDER')
+    })
+    this.observer.observe(target)
+  }
+
   /**
    * brush end 时触发
    * @param {Array} selection 刷子所选的范围
@@ -95,6 +99,7 @@ class Trace {
   destory () {
     this._table && this._table.destory()
     this._graph && this._graph.destory()
+    this.observer && this.observer.disconnect()
     this.event.off()
     this.event = null
   }
@@ -103,6 +108,7 @@ class Trace {
     nextTick(() => {
       this._table && this._table.render()
       this._graph && this._graph.render()
+      this._observeMainWrapper(this._mainWrapper.node())
     })
   }
 }

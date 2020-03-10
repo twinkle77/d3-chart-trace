@@ -47,13 +47,7 @@ class Graph {
   }
 
   _bindEvent () {
-    d3
-      .select(window)
-      .on('resize.graph', () => {
-        this.render()
-      })
-
-    this.options.event.on('GRAPH_RE_RENDER', () => {
+    this.options.event.on('RE_RENDER', () => {
       this.render()
     })
   }
@@ -100,11 +94,7 @@ class Graph {
       .attr('height', this._svg.height = svgHeight)
   }
 
-  destory () {
-    d3
-      .select(window)
-      .on('resize.graph', null)
-  }
+  destory () {}
 }
 
 export default Graph

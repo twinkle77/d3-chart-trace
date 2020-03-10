@@ -38,10 +38,8 @@ export default class Collapse {
   }
 
   _bindEvent () {
-    const { event } = this.options
     this.headerElement.addEventListener('click', () => {
       this.toggleHandler()
-      event.emit('GRAPH_RE_RENDER')
     }, false)
   }
 

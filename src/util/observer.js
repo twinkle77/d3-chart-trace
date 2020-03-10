@@ -1,21 +1,21 @@
-let ro = null
+import { ResizeObserver as Polyfill } from '@juggle/resize-observer'
 
-import('@juggle/resize-observer')
-  .then(res => {
-    console.log(res)
-  })
-// (async () => {
-//   if ('ResizeObserver' in window === false) {
-//     // Loads polyfill asynchronously, only if required.
-//     const module = await import('@juggle/resize-observer');
-//     window.ResizeObserver = module.ResizeObserver;
-//   }
-//   // Uses native or polyfill, depending on browser support.
-//   ro = new ResizeObserver((entries, observer) => {
-//     console.log('Something has resized!');
-//   });
+const ResizeObserver = window.ResizeObserver || Polyfill
 
-// })();
+export default class Observer {
+  constructor (fn) {
+    this.resizeObserver = new ResizeObserver(
+      (entries) => {
+        fn && fn()
+      },
+    )
+  }
 
+  observe (target) {
+    this.resizeObserver.observe(target)
+  }
 
-export default ro
+  disconnect () {
+    this.resizeObserver.disconnect()
+  }
+}

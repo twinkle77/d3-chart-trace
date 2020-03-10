@@ -119,8 +119,6 @@ class Table {
           insertAfter(this.cardInstance.fragment, this)
           d3.select(this).classed('trace-expanded', this.isExpanded = true)
         }
-
-        that.options.event.emit('GRAPH_RE_RENDER')
       })
 
     // exit集合
@@ -216,13 +214,7 @@ class Table {
   }
 
   _bindEvent () {
-    d3
-      .select(window)
-      .on('resize.table', () => {
-        this.render()
-      })
-
-    this.options.event.on('GRAPH_RE_RENDER', () => {
+    this.options.event.on('RE_RENDER', () => {
       this.renderHeaderAxis(this._headerAxis.domain())
     })
   }
@@ -257,11 +249,7 @@ class Table {
     this.renderHeaderAxis(domain)
   }
 
-  destory () {
-    d3
-      .select(window)
-      .on('resize.table', null)
-  }
+  destory () {}
 }
 
 export default Table
