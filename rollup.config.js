@@ -49,9 +49,10 @@ const config = [
     input: 'src/index.js',
     output: {
       name: meta.name,
-      file: `dist/${meta.name}.js`,
-      format: 'umd',
-      sourcemap: 'inline'
+      dir: `dist`,
+      format: 'esm',
+      sourcemap: 'inline',
+      entryFileNames: `${meta.name}.js`
     },
     plugins
   }
@@ -62,8 +63,10 @@ if (process.env.NODE_ENV === 'production') {
     input: 'src/index.js',
     output: {
       name: meta.name,
-      file: `dist/${meta.name}.min.js`,
-      format: 'umd'
+      dir: `dist`,
+      format: 'esm',
+      entryFileNames: `${meta.name}.min.js`,
+      chunkFileNames: '[name]-[hash].min.js'
     },
     plugins: [...plugins, terser()]
   })

@@ -9,6 +9,10 @@ import d3 from './d3'
 import { warn } from './util/debug'
 import Event from './util/event'
 
+import observer from './util/observer.js'
+
+console.log(observer)
+
 class Trace {
   constructor (target = 'target', options = {}) {
     if (!options.data || (isArray(options.data) && options.data.length === 0)) {

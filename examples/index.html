@@ -9,90 +9,14 @@
 </head>
 
 <body>
-  <script src="/dist/d3-trace.js"></script>
+  <script src="/dist/d3-trace.js" type="module"></script>
   <script src="./trace1.js"></script>
   <script src="./trace2.js"></script>
-  <script>
-    function transformData(spans) {
-      let rootNode = null
-      let minStartTime = spans[0].startTime
-
-      for (let i = 0; i < spans.length; i += 1) {
-        const span = spans[i]
-
-        // 添加children字段
-        span.children = []
-
-        // 寻找根节点
-        if (!rootNode && span.traceID === span.spanID) {
-          rootNode = span
-        }
-      }
-
-      for (let i = 0; i < spans.length; i += 1) {
-        const span = spans[i]
-
-        // 寻找父节点
-        for (let j = 0; j < span.references.length; j += 1) {
-          const { spanID } = span.references[j]
-          const targetSpan = spans.find(item => item.spanID === spanID)
-          if (!targetSpan) {
-            break
-          }
-
-          if (!Array.isArray(targetSpan.children)) {
-            targetSpan.children = []
-          }
-          targetSpan.children.push(span)
-        }
-      }
-
-      this.correctingTime(rootNode)
-
-      for (let i = 0; i < spans.length; i += 1) {
-        const span = spans[i]
-
-        // 寻找最小开始时间
-        minStartTime = Math.min(span.startTime, minStartTime)
-      }
-
-      // 添加endTime字段、时间转为ms
-      for (let i = 0; i < spans.length; i += 1) {
-        const span = spans[i]
-
-        span.startTime -= minStartTime
-        span.startTime /= 1000
-
-        span.duration /= 1000
-        span.endTime = span.startTime + span.duration
-      }
-
-      return [rootNode]
-    }
-
-    function correctingTime(parentNode) {
-      const t1 = parentNode.startTime
-      const t4 = parentNode.startTime + parentNode.duration
-
-      parentNode.children &&
-        parentNode.children.forEach(childNode => {
-          let t2 = childNode.startTime
-          let t3 = childNode.startTime + childNode.duration
-
-          let ct2 = t1 + (t4 - t1 - (t3 - t2)) / 2
-          let ct3 = t4 - (t4 - t1 - (t3 - t2)) / 2
-
-          childNode.startTime = ct2
-          childNode.duration = ct3 - ct2
-
-          correctingTime(childNode)
-        })
-    }
-  </script>
-  <script>
+  <script type="module">
+    import Trace from '/dist/d3-trace.js'
     let number = 1
     let data = [traceData1, traceData2]
-    const instance = new window['d3-trace'](document.body, {
+    const instance = new Trace(document.body, {
       brushEnd() { },
       data: traceData1,
     })

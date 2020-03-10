@@ -593,6 +593,11 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@juggle/resize-observer@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.1.1.tgz#ade32049ae8e6cd692ef5d760aa4fdbe0db356e2"
+  integrity sha512-zo+xWLZ0FNY4hhFLHyvJ+fOzWUKGkK0wQDdiLkJU6daXvQDEohh9p5rvGl5GpkXAr2Zx6WMRstl8Ulu/QTRKww==
+
 "@rollup/plugin-alias@^2.2.0":
   version "2.2.0"
   resolved "https://registry.npm.taobao.org/@rollup/plugin-alias/download/@rollup/plugin-alias-2.2.0.tgz#3ac52ece8b39583249884adb90fb316484389fe5"
