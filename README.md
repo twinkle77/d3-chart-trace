@@ -16,6 +16,8 @@
 
 ### 🏠 [Homepage](https://github.com/twinkle77/d3-trace#readme)
 
+![image](https://github.com/twinkle77/d3-trace/blob/master/examples/trace.gif)
+
 ## Install
 
 ```sh
