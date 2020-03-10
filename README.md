@@ -105,6 +105,17 @@ instance.setOptions(newData)
 
 [Jaeger UI](https://github.com/jaegertracing/jaeger-ui)
 
+## 注意事项
+
+若```t1<t2<t3<t4```不成立，说明服务器的时间偏差较大，需要进行手动修正。
+
+```javascript
+t2=t1+((t4-t1)-(t3-t2))/2
+t3=t4-((t4-t1)-(t3-t2))/2
+```
+
+请参考[天机阁——全链路跟踪系统设计与实现](https://www.infoq.cn/article/JF-144XPDqDxxdizdfwT)。
+
 ## Author
 
 👤 **twinkle77**
