@@ -1,7 +1,6 @@
 import extend from 'extend'
 import { getElementRect } from '@/util/element'
 import view from '@/util/view'
-import d3 from '@/d3'
 import Axis from './axis'
 import Bar from './bar'
 import Brush from './brush'

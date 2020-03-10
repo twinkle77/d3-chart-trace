@@ -5,7 +5,7 @@ const ResizeObserver = window.ResizeObserver || Polyfill
 export default class Observer {
   constructor (fn) {
     this.resizeObserver = new ResizeObserver(
-      (entries) => {
+      () => {
         fn && fn()
       },
     )

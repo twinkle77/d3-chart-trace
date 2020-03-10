@@ -14,11 +14,24 @@
   <script src="./trace2.js"></script>
   <script type="module">
     import Trace from '/dist/d3-trace.js'
+
     let number = 1
+    formatData(traceData1)
+    formatData(traceData2)
     let data = [traceData1, traceData2]
+
+    function formatData(data) {
+      data.forEach(node => {
+        node.logs && node.logs.forEach(item => {
+          item.timestamp = formatTime(Date.now())
+        })
+        node.children && formatData(node.children)
+      })
+    }
+
     const instance = new Trace(document.body, {
       brushEnd() { },
-      data: traceData1,
+      data: data[0],
     })
     instance.render()
 
@@ -30,6 +43,24 @@
       instance.setOptions(data[number % data.length])
       number++
     }, false)
+
+    function formatTime (inputTime) {
+      if (!inputTime) return '--'
+      let date = new Date(inputTime)
+      let y = date.getFullYear()
+      let m = date.getMonth() + 1
+      m = m < 10 ? '0' + m : m
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let minute = date.getMinutes()
+      let second = date.getSeconds()
+      minute = minute < 10 ? '0' + minute : minute
+      second = second < 10 ? '0' + second : second
+      return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second
+    }
+
   </script>
 </body>
 
