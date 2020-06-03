@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to d3-trace 👋</h1>
+<h1 align="center">Welcome to d3-chart-trace 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/twinkle77/d3-trace#readme" target="_blank">
